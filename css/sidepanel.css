@@ -1,0 +1,87 @@
+:root {
+  --bg: #d6f3da;
+  --border: #189200;
+  --padding: 1px;
+  --margin: 1px;
+  --border-radius: 16px;
+  --border-radius-small: 4px;
+
+}
+
+#container {
+  width: auto;
+  height: fit-content;
+  border: 2px green solid;
+  border-radius: var(--border-radius);
+  border-width: thin;
+}
+
+#nav {
+  border-radius: var(--border-radius);
+}
+
+#table_container {
+  min-height: 200px;
+  margin: 4px;
+  border: thin grey;
+  height: fit-content;
+  border-radius: var(--border-radius);
+}
+
+#table_info {
+  padding: 4px;
+  margin: 4px;
+  min-height: 200px;
+  height: fit-content;
+  vertical-align: middle;
+  text-align: center;
+
+
+}
+
+#svg {
+  padding: 4px;
+  margin: 40px;
+  min-height: 200px;
+  height: fit-content;
+  vertical-align: middle;
+  text-align: center;
+  border: #189200;
+
+
+}
+
+#total {
+  border-radius: var(--border-radius-small);
+  margin: 2px;
+  border: 2px red;
+  padding: 6px;
+  width: fit-content;
+  background-color: rgb(233, 211, 209);
+}
+
+#event_id {
+  border-radius: var(--border-radius-small);
+  margin: 2px;
+  border: 2px red;
+  padding: 6px;
+  width: fit-content;
+  background-color: rgb(227, 233, 209);
+}
+
+#event_name {
+  border-radius: var(--border-radius-small);
+  margin: 2px;
+  border: 2px red;
+  padding: 6px;
+  width: fit-content;
+  background-color: rgb(209, 223, 233);
+}
+
+#image {
+  border-radius: var(--border-radius);
+  margin: 2px;
+  border: 2px rgb(4, 0, 255);
+  padding: 4px;
+  width: 99.6%;
+}

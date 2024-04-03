@@ -1,0 +1,70 @@
+{
+  "manifest_version": 3,
+  "name": "TicketBoat V3",
+  "version": "1.0.0",
+  "description": "Scraps purchase info from different ticket selling platforms such as Ticketmaster and Axs.",
+  "short_name": "TICKETBOAT EXTENSION",
+  "permissions": [
+    "storage",
+    "tabs",
+    "activeTab",
+    "scripting",
+    "notifications",
+    "downloads",
+    "unlimitedStorage",
+    "contextMenus",
+    "sidePanel",
+    "cookies",
+    "browsingData",
+    "webRequest"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "optional_permissions": [
+    "clipboardWrite"
+  ],
+  "background": {
+    "service_worker": "js/service_worker.js"
+  },
+  "action": {
+    "default_icon": {
+      "16": "images/icon.png",
+      "32": "images/icon.png",
+      "48": "images/icon.png",
+      "128": "images/icon.png"
+    },
+    "default_title": "axs",
+    "default_popup": "html/popup.html"
+  },
+  "side_panel": {
+    "default_path": "html/sidepanel.html"
+  },
+  "icons": {
+    "16": "images/icon.png",
+    "32": "images/icon.png",
+    "48": "images/icon.png",
+    "128": "images/icon.png"
+  },
+  "content_scripts": [
+    {
+      "js": [
+        "js/jquery.js",
+        "js/bootstrap.js",
+        "js/content.js"
+      ],
+      "css": [
+        "css/bootstrap.css",
+        "css/content.css"
+      ],
+      "matches": [
+        "https://*.axs.com/*",
+        "https://*.axs.co.uk/*",
+        "https://*.ticketmaster.com/*"
+      ],
+      "match_about_blank": true,
+      "all_frames": false,
+      "run_at": "document_end"
+    }
+  ]
+}
