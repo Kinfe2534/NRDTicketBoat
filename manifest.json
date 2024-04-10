@@ -16,14 +16,11 @@
     "sidePanel",
     "cookies",
     "browsingData",
-    "webRequest"
+    "webRequest",
+    "declarativeNetRequest"
   ],
-  "host_permissions": [
-    "<all_urls>"
-  ],
-  "optional_permissions": [
-    "clipboardWrite"
-  ],
+  "host_permissions": ["<all_urls>"],
+  "optional_permissions": ["clipboardWrite"],
   "background": {
     "service_worker": "js/service_worker.js"
   },
@@ -46,21 +43,30 @@
     "48": "images/icon.png",
     "128": "images/icon.png"
   },
+  "declarative_net_request": {
+    "rule_resources": [
+      {
+        "id": "ruleset_1",
+        "enabled": true,
+        "path": "rules/ruleset_1.json"
+      }
+    ]
+  },
   "content_scripts": [
     {
       "js": [
         "js/jquery.js",
         "js/bootstrap.js",
+        "js/file_saver.js",
+        "js/dom-to-image-more.js",
         "js/content.js"
       ],
-      "css": [
-        "css/bootstrap.css",
-        "css/content.css"
-      ],
+      "css": ["css/bootstrap.css", "css/content.css"],
       "matches": [
         "https://*.axs.com/*",
         "https://*.axs.co.uk/*",
-        "https://*.ticketmaster.com/*"
+        "https://*.ticketmaster.com/*",
+        "https://*.etix.com/*"
       ],
       "match_about_blank": true,
       "all_frames": false,
