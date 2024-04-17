@@ -1,10 +1,4 @@
-const ticket_sites = [
-  "https://tix.axs.com",
-  "https://shop.axs.co.uk",
-  "https://www.axs.com",
-  "https://q.axs.co.uk",
-  "https://www.ticketmaster.com",
-];
+const ticket_sites = ["https://www.ticketmaster.com", "https://tix.axs.com", "https://shop.axs.co.uk", "https://www.axs.com", "https://q.axs.co.uk"];
 
 chrome.tabs.onUpdated.addListener(async (tabId, info, tab) => {
   if (!tab.url) return;
@@ -27,14 +21,14 @@ chrome.tabs.onUpdated.addListener(async (tabId, info, tab) => {
 // context menu ["page", "selection", "image", "link"]
 chrome.runtime.onInstalled.addListener(function () {
   chrome.contextMenus.create({
-    title: "TicketBoat ON/OFF",
+    title: "Purchase Tracker ON/OFF",
     contexts: ["all"],
-    id: "toggle_ticketboat",
+    id: "toggle_purchase_tracker",
   });
 });
 
 chrome.contextMenus.onClicked.addListener(async function (info, tab) {
-  if (info.menuItemId === "toggle_ticketboat") {
+  if (info.menuItemId === "toggle_purchase_tracker") {
     let result = await chrome.storage.local.get(["status"]);
     chrome.storage.local.set(
       {
@@ -50,49 +44,49 @@ chrome.contextMenus.onClicked.addListener(async function (info, tab) {
     }
   }
 });
+
 /////////////////////////////
 chrome.webRequest.onBeforeSendHeaders.addListener(
   function (details) {
     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-      chrome.tabs.sendMessage(
-        tabs[0].id,
-        { cmd: "onBeforeSendHeaders", details: details },
-        function (response) {
-          // alert("hello again");
-        }
-      );
+      chrome.tabs.sendMessage(tabs[0].id, { cmd: "from_webRequest_onBeforeSendHeaders", details: details }, function (response) {
+        // alert("hello again");
+      });
     });
   },
-  { urls: ["https://ids.ad.gt/api/v1/halo_match*"], types: ["xmlhttprequest"] },
+  {
+    urls: ["https://checkout.ticketmaster.com/graphql"],
+    types: ["xmlhttprequest"],
+  },
   ["requestHeaders"]
 );
+
 /////////////////////////////
-chrome.webRequest.onHeadersReceived.addListener(
+chrome.webRequest.onCompleted.addListener(
   function (details) {
     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-      chrome.tabs.sendMessage(
-        tabs[0].id,
-        { cmd: "onHeadersReceived", details: details },
-        function (response) {
-          // alert("hello again");
-        }
-      );
+      chrome.tabs.sendMessage(tabs[0].id, { cmd: "from_webRequest_complete", details: details }, function (response) {
+        // alert("hello again");
+      });
     });
-    // modify headers
-    details.responseHeaders.name = "kinfe";
-    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-      chrome.tabs.sendMessage(
-        tabs[0].id,
-        { cmd: "onHeadersReceived", details: details },
-        function (response) {
-          // alert("hello again");
-        }
-      );
-    });
-    return {
-      responseHeaders: details.responseHeaders,
-    };
   },
-  { urls: ["https://ids.ad.gt/api/v1/halo_match*"], types: ["xmlhttprequest"] },
-  ["responseHeaders", "extraHeaders"]
+  {
+    urls: ["https://checkout.ticketmaster.com/graphql"],
+    types: ["xmlhttprequest"],
+  },
+  ["responseHeaders"]
+);
+//////////////////
+chrome.webRequest.onErrorOccurred.addListener(
+  function (e) {
+    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+      chrome.tabs.sendMessage(tabs[0].id, { cmd: "from_webRequest_error", id: e.requestId }, function (response) {
+        // alert("hello again");
+      });
+    });
+  },
+  {
+    urls: ["https://checkout.ticketmaster.com/graphql"],
+    types: ["xmlhttprequest"],
+  }
 );

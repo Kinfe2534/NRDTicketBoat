@@ -1,9 +1,9 @@
 {
   "manifest_version": 3,
-  "name": "TicketBoat V3",
+  "name": "Purchase Tracker",
   "version": "1.0.0",
   "description": "Scraps purchase info from different ticket selling platforms such as Ticketmaster and Axs.",
-  "short_name": "TICKETBOAT EXTENSION",
+  "short_name": "PURCHASE TRACKER EXTENSION",
   "permissions": [
     "storage",
     "tabs",
@@ -31,11 +31,16 @@
       "48": "images/icon.png",
       "128": "images/icon.png"
     },
-    "default_title": "axs",
+    "default_title": "Purchase Tracker",
     "default_popup": "html/popup.html"
   },
   "side_panel": {
     "default_path": "html/sidepanel.html"
+  },
+  
+  "options_ui": {
+    "page": "html/options.html",
+    "open_in_tab": false
   },
   "icons": {
     "16": "images/icon.png",
@@ -46,9 +51,9 @@
   "declarative_net_request": {
     "rule_resources": [
       {
-        "id": "ruleset_1",
+        "id": "tm_cors_rulset",
         "enabled": true,
-        "path": "rules/ruleset_1.json"
+        "path": "ruleset/tm_cors_rulset.json"
       }
     ]
   },
@@ -56,6 +61,7 @@
     {
       "js": [
         "js/jquery.js",
+        "js/jquery.toast.min.js",
         "js/bootstrap.js",
         "js/file_saver.js",
         "js/dom-to-image-more.js",
@@ -63,10 +69,11 @@
       ],
       "css": ["css/bootstrap.css", "css/content.css"],
       "matches": [
-        "https://*.axs.com/*",
-        "https://*.axs.co.uk/*",
+        
         "https://*.ticketmaster.com/*",
-        "https://*.etix.com/*"
+        "https://*.etix.com/*",
+        "https://*.axs.com/*",
+        "https://*.axs.co.uk/*"
       ],
       "match_about_blank": true,
       "all_frames": false,

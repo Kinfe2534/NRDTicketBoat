@@ -1,0 +1,22 @@
+:root {
+  --bg: #d6f3da;
+  --border: #189200;
+  --padding: 1px;
+  --margin: 1px;
+  --border-radius: 4px;
+
+}
+
+#container {
+  width: auto;
+  height: auto;
+  border: 2px green solid;
+  border-radius: var(--border-radius);
+  border-width: thin;
+}
+
+#nav{
+  width: max-content;
+  border-radius: var(--border-radius);
+}
+

@@ -4,7 +4,7 @@
   --padding: 1px;
   --margin: 1px;
   --border-radius: 16px;
-  --border-radius-small: 4px;
+  --border-radius-big: 18px;
 
 }
 
@@ -17,7 +17,7 @@
 }
 
 #nav {
-  border-radius: var(--border-radius);
+  border-radius: var(--border-radius-big);
 }
 
 #table_container {
@@ -39,47 +39,10 @@
 
 }
 
-#svg {
-  padding: 4px;
-  margin: 40px;
-  min-height: 200px;
-  height: fit-content;
-  vertical-align: middle;
-  text-align: center;
-  border: #189200;
 
-
-}
-
-#total {
-  border-radius: var(--border-radius-small);
-  margin: 2px;
-  border: 2px red;
-  padding: 6px;
-  width: fit-content;
-  background-color: rgb(233, 211, 209);
-}
-
-#event_id {
-  border-radius: var(--border-radius-small);
-  margin: 2px;
-  border: 2px red;
-  padding: 6px;
-  width: fit-content;
-  background-color: rgb(227, 233, 209);
-}
-
-#event_name {
-  border-radius: var(--border-radius-small);
-  margin: 2px;
-  border: 2px red;
-  padding: 6px;
-  width: fit-content;
-  background-color: rgb(209, 223, 233);
-}
 
 #image {
-  border-radius: var(--border-radius);
+  border-radius: var(--border-radius-big);
   margin: 2px;
   border: 2px rgb(4, 0, 255);
   padding: 4px;

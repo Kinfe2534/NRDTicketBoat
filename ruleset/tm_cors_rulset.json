@@ -1,23 +1,6 @@
-[{
-    "id": 1,
-    "priority": 1,
-    "action": {
-        "type": "modifyHeaders",
-        "requestHeaders": [{
-            "header": "Name",
-            "operation": "set",
-            "value": "Kinfe Desta"
-        }]
-    },
-    "condition": {
-        "urlFilter": "https://ids.ad.gt/api/v1/halo_match*",
-        "resourceTypes": ["xmlhttprequest"]
-
-    }
-
-},
+[
 {
-    "id": 2,
+    "id": 1,
     "priority": 1,
     "action": {
         "type": "modifyHeaders",
@@ -36,7 +19,7 @@
 }
 ,
 {
-    "id": 3,
+    "id": 2,
     "priority": 1,
     "action": {
         "type": "modifyHeaders",
