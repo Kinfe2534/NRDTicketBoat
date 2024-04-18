@@ -91,7 +91,11 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
                           <td>${request.content.data.purchaseStatusResponse.ticketOrderItems[0].ticketTypes[0].quantity}</td>
                           
                       </tr>`);
-    } else if (request.cmd === "login_time_out") {
+    } else if (request.cmd === "unknown_response") {
+      $("#table_container").append(`
+      <h1 class="display-6">Confirmation Details... Unknown Response</h1>
+      <h1 class="display-6">Status... ${request.content}</h1>
+      `);
     }
   } catch (err) {
     console.warn({ where: "Error in dispalaying table in sidepanel", e: err });

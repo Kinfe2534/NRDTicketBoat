@@ -95,10 +95,11 @@ async function get_ticketmaster_confirmation_page(details) {
 
     const response = await fetch(details.url, {
       credentials: "include",
+      method: "POST",
       headers: {
-        "Access-Control-Allow-Origin": "*",
-        Accept: "application/json",
-        "Content-Type": "application/json",
+        Accept: "/",
+        "Accept-Encoding": "gzip, deflate, br, zstd",
+        "Content-Type": "text/plain;charset=UTF-8",
         "accept-language": "en-US,en;q=0.9",
         "sec-ch-ua": '".Not/A)Brand";v="99", "Google Chrome";v="103", "Chromium";v="103"',
         "sec-ch-ua-mobile": "?0",
@@ -123,8 +124,6 @@ async function get_ticketmaster_confirmation_page(details) {
       },
 
       body: JSON.stringify({ variables: { getSessionStatusInput: { requestId: Referer.value.split("?")[0].split("/")[4] } } }),
-      method: "POST",
-      mode: "cors",
     });
 
     if (response.status === 200) {
@@ -170,7 +169,7 @@ const toast = {
     position: "mid-center",
     icon: "error",
     allowToastClose: true,
-    hideAfter: 1000 * 5, // hide after 5 sec
+    hideAfter: 1000 * 20, // hide after 5 sec
   },
   post_success: {
     heading: "Post Success",
