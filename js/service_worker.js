@@ -1,4 +1,4 @@
-const ticket_sites = ["https://www.ticketmaster.com","https://checkout.ticketmaster.com/", "https://tix.axs.com", "https://shop.axs.co.uk", "https://www.axs.com", "https://q.axs.co.uk"];
+const ticket_sites = ["https://www.ticketmaster.com","https://checkout.ticketmaster.com", "https://tix.axs.com", "https://shop.axs.co.uk", "https://www.axs.com", "https://q.axs.co.uk"];
 
 chrome.tabs.onUpdated.addListener(async (tabId, info, tab) => {
   if (!tab.url) return;
