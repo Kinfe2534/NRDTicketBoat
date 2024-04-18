@@ -1,4 +1,4 @@
-const ticket_sites = ["https://www.ticketmaster.com", "https://checkout.ticketmaster.com", "https://tix.axs.com", "https://shop.axs.co.uk", "https://www.axs.com", "https://q.axs.co.uk"];
+const ticket_sites = ["https://www.ticketmaster.com","https://checkout.ticketmaster.com", "https://tix.axs.com", "https://shop.axs.co.uk", "https://www.axs.com", "https://q.axs.co.uk"];
 
 chrome.tabs.onUpdated.addListener(async (tabId, info, tab) => {
   if (!tab.url) return;
@@ -58,7 +58,7 @@ chrome.webRequest.onBeforeSendHeaders.addListener(
     urls: ["https://checkout.ticketmaster.com/graphql"],
     types: ["xmlhttprequest"],
   },
-  ["requestHeaders", "extraHeaders"]
+  ["requestHeaders","extraHeaders"]
 );
 
 /////////////////////////////
@@ -74,7 +74,7 @@ chrome.webRequest.onCompleted.addListener(
     urls: ["https://checkout.ticketmaster.com/graphql"],
     types: ["xmlhttprequest"],
   },
-  ["responseHeaders", "extraHeaders"]
+  ["responseHeaders"]
 );
 //////////////////
 chrome.webRequest.onErrorOccurred.addListener(
@@ -88,5 +88,5 @@ chrome.webRequest.onErrorOccurred.addListener(
   {
     urls: ["https://checkout.ticketmaster.com/graphql"],
     types: ["xmlhttprequest"],
-  }[("responseHeaders", "extraHeaders")]
+  }
 );
