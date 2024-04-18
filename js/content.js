@@ -43,7 +43,7 @@ async function get_ticketmaster_confirmation_page(details) {
       return header.name == "request-name";
     });
     // if the request name is not purchase status, abort
-    if (Request_Name !== "purchaseStatus") {
+    if (Request_Name.value !== "purchaseStatus") {
       return;
     } else {
       fetch_confirmation_page = false;
