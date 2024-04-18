@@ -122,7 +122,7 @@ async function get_ticketmaster_confirmation_page(details) {
         "X-Tm-Domain": X_Tm_Domain.value,
       },
 
-      body: { variables: { getSessionStatusInput: { requestId: Referer.split("/")[4] } } },
+      body: { variables: { getSessionStatusInput: { requestId: Referer.value.split("/")[4] } } },
       method: "POST",
       mode: "cors",
     });
