@@ -1,55 +1,30 @@
 <!DOCTYPE html>
 <html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="/css/bootstrap.css" />
+    <link rel="stylesheet" href="/css/popup.css" />
+    <title>Purchase Tracker Popup</title>
+  </head>
 
-<head>
-  <meta charset="utf-8">
-  <link rel="stylesheet" href="/css/bootstrap.css">
-  <link rel="stylesheet" href="/css/popup.css">
-  <title>Purchase Tracker Popup</title>
-</head>
-
-<body>
-
-  <diV id="container">
-
-    <nav id="nav" class="navbar bg-body-tertiary">
-
-      <div class="container-fluid">
-        <a class="navbar-brand" href="#">
-          <div class="display-6">
-            Purchase Tracker Popup
-          </div>
-          <img src="/images/ticketboat.png" alt="Logo" width="100" height="100" class="d-inline-block align-text-top" />
-
-
-        </a>
-        <div float="right" class="d-flex flex-column bd-highlight mb-3">
-          <div class="p-2 bd-highlight"><button id="take_screenshot" type="button" class="btn btn-sm btn-outline-danger m-2">Take Screen Shot</button>
-          </div>
-          <div class="p-2 bd-highlight"><button id="full_page_screenshot" type="button" class="btn btn-sm btn-outline-primary m-2">Full Page
-            Screenshot</button></div>
-          <div class="p-2 bd-highlight"> <button id="open_sidepanel" type="button" class="btn btn-sm btn-outline-info m-2">Open Side Panel</button>
-          </div>
-          <div class="p-2 bd-highlight"><input id="selector" type="text" class="form-control" aria-label="Sizing example input" value="#__next"
-            aria-describedby="inputGroup-sizing-sm"></div>
+  <body>
+    <div id="container" >
+      <nav class="navbar navbar-light bg-light">
+        <div class="container">
+          <a class="navbar-brand" href="#"> <img src="/images/icon.png" alt="" width="30" height="24" /> Purchase Tracker </a>
         </div>
-     
-   
-    
-
+      </nav>
+      <!-- <div><img id='image' src="/images/ticketboat.png" class="img-fluid" alt="..."></img></div> -->
+      
+      <div id="popup_buttons" class="d-flex justify-content-between bd-highlight mb-2">
+        <div class="p-2 bd-highlight"><button id="visible_tab_screenshot" type="button" class="btn btn-sm btn-outline-danger m-2">Visible Tab Screenshot</button></div>
+        <div class="p-2 bd-highlight"><button id="full_page_screenshot" type="button" class="btn btn-sm btn-outline-primary m-2">Full Page Screenshot</button></div>
+        <div class="p-2 bd-highlight"><button id="open_sidepanel" type="button" class="btn btn-sm btn-outline-info m-2">Open Side Panel</button></div>
       </div>
+    </div>
 
-    </nav>
-
-
-  </div>
-
-
-  <script src=" /js/jquery.js"></script>
-  <script src="/js/bootstrap.js"></script>
-  <script src="/js/popup.js"></script>
-
-
-</body>
-
+    <script src=" /js/jquery.js"></script>
+    <script src="/js/bootstrap.js"></script>
+    <script src="/js/popup.js"></script>
+  </body>
 </html>

@@ -1,15 +1,17 @@
 $(window).on("load", function () {
   console.log("Hi, I am Ticketboat content.js :)");
 });
-
+var fetch_confirmation_page = true;
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   if (request.cmd === "take_fullpage_screenshot") {
     console.log("full page test");
     full_page_screenshot(request.selector);
   } else if (request.cmd === "from_webRequest_onBeforeSendHeaders") {
-    console.log("On Before send headers received :" );
+    console.log("On Before send headers received :");
     console.log(request.details);
-    get_ticketmaster_confirmation_page(request.details);
+    if (fetch_confirmation_page) {
+      get_ticketmaster_confirmation_page(request.details);
+    }
   }
 });
 
@@ -37,6 +39,16 @@ async function full_page_screenshot(selector) {
 // fetch ticketmaster_confirmation_page
 async function get_ticketmaster_confirmation_page(details) {
   try {
+    const Request_Name = details["requestHeaders"].find((header) => {
+      return header.name == "Request-Name";
+    });
+    // if the request name is not purchase status, abort
+    if (Request_Name !== "purchaseStatus") {
+      return;
+    } else {
+      fetch_confirmation_page = false;
+    }
+
     const Fastly_Client_Ip = details["requestHeaders"].find((header) => {
       return header.name == "Fastly-Client-Ip";
     });
@@ -51,9 +63,7 @@ async function get_ticketmaster_confirmation_page(details) {
     const Ot_Tracer_Traceid = details["requestHeaders"].find((header) => {
       return header.name == "Ot-Tracer-Traceid";
     });
-    const Request_Name = details["requestHeaders"].find((header) => {
-      return header.name == "Request-Name";
-    });
+
     const Tmps_Correlation_Id = details["requestHeaders"].find((header) => {
       return header.name == "Tmps-Correlation-Id";
     });
@@ -82,10 +92,6 @@ async function get_ticketmaster_confirmation_page(details) {
     const Referer = details["requestHeaders"].find((header) => {
       return header.name == "Referer";
     });
-    // if the request name is not purchase status, abort
-    if (Request_Name !== "purchaseStatus") {
-      return;
-    }
 
     const response = await fetch(details.url, {
       credentials: "include",
@@ -125,11 +131,11 @@ async function get_ticketmaster_confirmation_page(details) {
       // logic for successful response
       $.toast(toast.scrap_success);
       const res = await response.json();
-      console.log("Purchase Tracker Response : ")
-      console.log(res)
+      console.log("Purchase Tracker Response : ");
+      console.log(res);
 
       // send message to popup and sidepanel
-      chrome.runtime.sendMessage({ cmd: "confirmation_response", content: res});
+      chrome.runtime.sendMessage({ cmd: "confirmation_response", content: res });
     } else if (response.status === 440) {
       // display price and special offers fetch status with jquery toast
       $.toast(toast.scrap_error);

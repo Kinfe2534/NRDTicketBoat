@@ -3,12 +3,10 @@
   --border: #189200;
   --padding: 1px;
   --margin: 1px;
-  --border-radius: 16px;
-  --border-radius-big: 18px;
+  --border-radius: 8px;
 
 }
-
-#container {
+body {
   width: auto;
   height: fit-content;
   border: 2px green solid;
@@ -16,8 +14,16 @@
   border-width: thin;
 }
 
+#container {
+  width: auto;
+  height: auto;
+  border: 2px green solid;
+  border-radius: var(--border-radius);
+  border-width: thin;
+}
+
 #nav {
-  border-radius: var(--border-radius-big);
+  border-radius: var(--border-radius);
 }
 
 #table_container {
@@ -42,7 +48,7 @@
 
 
 #image {
-  border-radius: var(--border-radius-big);
+  border-radius: var(--border-radius);
   margin: 2px;
   border: 2px rgb(4, 0, 255);
   padding: 4px;

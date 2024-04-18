@@ -1,39 +1,38 @@
 [
-{
+  {
     "id": 1,
     "priority": 1,
     "action": {
-        "type": "modifyHeaders",
-        "responseHeaders": [{
-            "header": "Access-Control-Allow-Origin",
-            "operation": "set",
-            "value": "*"
-        }]
+      "type": "modifyHeaders",
+      "responseHeaders": [
+        {
+          "header": "Access-Control-Allow-Origin",
+          "operation": "set",
+          "value": "*"
+        }
+      ]
     },
     "condition": {
-        "urlFilter": "https://ids.ad.gt/api/v1/halo_match*",
-        "resourceTypes": ["xmlhttprequest"]
-
+      "urlFilter": "https://ids.ad.gt/api/v1/halo_match*",
+      "resourceTypes": ["xmlhttprequest"]
     }
-
-}
-,
-{
+  },
+  {
     "id": 2,
     "priority": 1,
     "action": {
-        "type": "modifyHeaders",
-        "responseHeaders": [{
-            "header": "Access-Control-Allow-Origin",
-            "operation": "set",
-            "value": "*"
-        }]
+      "type": "modifyHeaders",
+      "responseHeaders": [
+        {
+          "header": "Access-Control-Allow-Origin",
+          "operation": "set",
+          "value": "*"
+        }
+      ]
     },
     "condition": {
-        "urlFilter": "https://ids.ad.gt/api/v1/ip_match*",
-        "resourceTypes": ["xmlhttprequest"]
-
+      "urlFilter": "https://ids.ad.gt/api/v1/ip_match*",
+      "resourceTypes": ["xmlhttprequest"]
     }
-
-}
+  }
 ]
