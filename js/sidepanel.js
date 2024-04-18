@@ -63,9 +63,8 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
                   <table class="table table-striped">
                       <thead>
                           <tr>
-                              <th scope="col">Section:</th>
-                              <th scope="col"># of Tickets</th>
-                              <th scope="col">Price</th>
+                              <th scope="col">Key</th>
+                              <th scope="col">Value</th>
                   
                           </tr>
                       </thead>
@@ -78,17 +77,17 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 
       $("#tbody").append(`<tr>
                                   <th scope="row">Purchase Status</th>
-                                  <td>${request.content.data.purchaseStatusResponse.status}</td>
+                                  <td>${request.content.data.getSessionStatus.purchaseStatusResponse.status}</td>
                                   
                               </tr>`);
       $("#tbody").append(`<tr>
                               <th scope="row">Total Amount</th>
-                              <td>$${(Number(request.content.data.purchaseStatusResponse.paymentMethods[0].chargeableAmount.subCurrencyValue) / 100).toFixed(2)}</td>
+                              <td>$${(Number(request.content.data.getSessionStatus.purchaseStatusResponse.paymentMethods[0].chargeableAmount.subCurrencyValue) / 100).toFixed(2)}</td>
                               
                           </tr>`);
       $("#tbody").append(`<tr>
                           <th scope="row">Quantity</th>
-                          <td>${request.content.data.purchaseStatusResponse.ticketOrderItems[0].ticketTypes[0].quantity}</td>
+                          <td>${request.content.data.getSessionStatus.purchaseStatusResponse.ticketOrderItems[0].ticketTypes[0].quantity}</td>
                           
                       </tr>`);
     } else if (request.cmd === "unknown_response") {

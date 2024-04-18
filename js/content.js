@@ -123,7 +123,10 @@ async function get_ticketmaster_confirmation_page(details) {
         "X-Tm-Domain": X_Tm_Domain.value,
       },
 
-      body: JSON.stringify({ variables: { getSessionStatusInput: { requestId: Referer.value.split("?")[0].split("/")[4] } } }),
+      body: JSON.stringify({
+        query: query,
+        variables: { getSessionStatusInput: { requestId: Referer.value.split("?")[0].split("/")[4] } }
+      }),
     });
 
     if (response.status === 200) {
@@ -217,3 +220,257 @@ const toast = {
     hideAfter: false,
   },
 };
+var query =
+  `
+query purchaseStatusQuery($getSessionStatusInput: GetSessionStatusInput!) {
+  getSessionStatus(getSessionStatusInput: $getSessionStatusInput) {
+    errors {
+      code
+      message
+    }
+    requestId
+    status
+    purchaseStatusResponse {
+      clubSiteId
+      deliveryData {
+        deliveryMethod
+        deliveryTax {
+          value
+          subCurrencyValue
+          currencyCode
+        }
+        description: longDescription
+        id
+        isETicket
+        name: shortDescription
+        price: ticketPrice {
+          value
+          subCurrencyValue
+          currencyCode
+        }
+        subDeliveryOptions: subDeliveries {
+          id
+          name: shortDescription
+          description: longDescription
+        }
+        type: serviceLevel
+      }
+      encryptedMemberOrderNumber
+      errors {
+        code
+        message
+        data {
+          failedReferenceIds
+          key
+          value
+        }
+      }
+      eventData {
+        actOverrideId
+        eventDate
+        eventEndDate
+        eventId
+        eventType
+        hasStaticMap
+        healthCheckMessage {
+          description
+          largeIconUrl
+          learnMoreUrl
+          provider
+          smallIconUrl
+          summary
+        }
+        id
+        image
+        isFanToFanExchange
+        isResaleEligible
+        isSpanMultipleDays
+        localDate
+        localTime
+        name
+        onsaleDate
+        primaryAttraction {
+          id
+          legacyId
+          imageHref
+          name
+          organizationId
+        }
+        primaryCategory {
+          classification
+          hostId
+          id
+          name
+        }
+        promoter
+        promoterCategory
+        promoterId
+        promoterIds
+        quaternaryCategory {
+          id
+          name
+          classification
+        }
+        quinaryCategory {
+          id
+          name
+          classification
+        }
+        secondaryAttraction {
+          id
+          legacyId
+          imageHref
+          name
+        }
+        subCategory {
+          classification
+          hostId
+          hostName
+          id
+          name
+        }
+        tertiaryCategory {
+          id
+          name
+          classification
+        }
+        transferable
+        url
+        venue {
+          address {
+            city
+            country
+            countryCode
+            postCode
+            region
+            regionCode
+            streetAddress
+          }
+          dmaId
+          id
+          name
+          timezone
+          tmId
+        }
+      }
+      hostUpsellEvents {
+        eventId
+        ticketTypes {
+          description
+          id
+          priceDetails {
+            facilityCharges {
+              currencyCode
+              subCurrencyValue
+            }
+            price {
+              currencyCode
+              subCurrencyValue
+            }
+            processingFee {
+              currencyCode
+              subCurrencyValue
+            }
+            serviceCharges {
+              currencyCode
+              subCurrencyValue
+            }
+            taxes {
+              currencyCode
+              subCurrencyValue
+            }
+            taxDetails {
+              faceValueTax {
+                currencyCode
+                subCurrencyValue
+              }
+              serviceChargeTax {
+                currencyCode
+                subCurrencyValue
+              }
+              serviceChargeTax2 {
+                currencyCode
+                subCurrencyValue
+              }
+            }
+          }
+          quantity
+        }
+        type: upsellType
+      }
+      locale
+      orderFees {
+        currencyCode
+        subCurrencyValue
+      }
+      orderNumber
+      parkingConfirmationUrl
+      paymentMethods {
+        ccLast4Digits
+        chargeableAmount {
+          currencyCode
+          subCurrencyValue
+        }
+        fundingMethod
+        fundingSource
+      }
+      sellerNotes
+      status
+      ticketOrderItems {
+        adaTypes
+        endSeat
+        inventoryDetail {
+          type
+          resaleDetail {
+            cartSessionId
+            offerVersionId
+          }
+        }
+        isGeneralAdmission
+        quantityAvailable
+        row
+        seatNames
+        section
+        startSeat
+        ticketTypes {
+          description
+          id
+          priceDetails {
+            facilityCharges {
+              currencyCode
+              value
+            }
+            price {
+              currencyCode
+              value
+            }
+            serviceCharges {
+              currencyCode
+              value
+            }
+            taxDetails {
+              faceValueTax {
+                currencyCode
+                value
+              }
+              serviceChargeTax {
+                currencyCode
+                value
+              }
+              serviceChargeTax2 {
+                currencyCode
+                value
+              }
+            }
+            taxes {
+              currencyCode
+              value
+            }
+          }
+          quantity
+        }
+      }
+    }
+  }
+}
+`
