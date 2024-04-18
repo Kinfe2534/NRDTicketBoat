@@ -40,7 +40,7 @@ async function full_page_screenshot(selector) {
 async function get_ticketmaster_confirmation_page(details) {
   try {
     const Request_Name = details["requestHeaders"].find((header) => {
-      return header.name == "Request-Name";
+      return header.name == "request-name";
     });
     // if the request name is not purchase status, abort
     if (Request_Name !== "purchaseStatus") {
@@ -50,44 +50,44 @@ async function get_ticketmaster_confirmation_page(details) {
     }
 
     const Fastly_Client_Ip = details["requestHeaders"].find((header) => {
-      return header.name == "Fastly-Client-Ip";
+      return header.name == "fastly-client-ip";
     });
 
     const Ot_Tracer_Sampled = details["requestHeaders"].find((header) => {
-      return header.name == "Ot-Tracer-Sampled";
+      return header.name == "ot-tracer-sampled";
     });
 
     const Ot_Tracer_Spanid = details["requestHeaders"].find((header) => {
-      return header.name == "Ot-Tracer-Spanid";
+      return header.name == "ot-tracer-spanid";
     });
     const Ot_Tracer_Traceid = details["requestHeaders"].find((header) => {
-      return header.name == "Ot-Tracer-Traceid";
+      return header.name == "ot-tracer-traceid";
     });
 
     const Tmps_Correlation_Id = details["requestHeaders"].find((header) => {
-      return header.name == "Tmps-Correlation-Id";
+      return header.name == "TMPS-Correlation-Id";
     });
 
     const Tmps_Monetate_Id = details["requestHeaders"].find((header) => {
-      return header.name == "Tmps-Monetate-Id";
+      return header.name == "tmps-monetate-id";
     });
     const Tmps_Session_Id = details["requestHeaders"].find((header) => {
-      return header.name == "Tmps-Session-Id";
+      return header.name == "tmps-session-id";
     });
     const X_Cmd = details["requestHeaders"].find((header) => {
-      return header.name == "X-Cmd";
+      return header.name == "x-cmd";
     });
     const X_Eid = details["requestHeaders"].find((header) => {
-      return header.name == "X-Eid";
+      return header.name == "x-eid";
     });
     const X_Environment_Tag = details["requestHeaders"].find((header) => {
-      return header.name == "X-Environment-Tag";
+      return header.name == "x-environment-tag";
     });
     const X_Tm_Bid = details["requestHeaders"].find((header) => {
-      return header.name == "X-Tm-Bid";
+      return header.name == "x-tm-bid";
     });
     const X_Tm_Domain = details["requestHeaders"].find((header) => {
-      return header.name == "X-Tm-Domain";
+      return header.name == "x-tm-domain";
     });
     const Referer = details["requestHeaders"].find((header) => {
       return header.name == "Referer";
