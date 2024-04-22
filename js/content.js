@@ -10,7 +10,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     console.log("On Before send headers received :");
     console.log(request.details);
     if (fetch_confirmation_page) {
-      get_ticketmaster_confirmation_page(request.details);
+      tm_get_confirmation_data(request.details);
     }
   }
 });
@@ -37,7 +37,7 @@ async function full_page_screenshot(selector) {
 }
 
 // fetch ticketmaster_confirmation_page
-async function get_ticketmaster_confirmation_page(details) {
+async function tm_get_confirmation_data(details) {
   try {
     const Request_Name = details["requestHeaders"].find((header) => {
       return header.name == "request-name";
@@ -125,103 +125,75 @@ async function get_ticketmaster_confirmation_page(details) {
 
       body: JSON.stringify({
         query: query,
-        variables: { getSessionStatusInput: { requestId: Referer.value.split("?")[0].split("/")[4] } }
+        variables: { getSessionStatusInput: { requestId: Referer.value.split("?")[0].split("/")[4] } },
       }),
     });
 
     if (response.status === 200) {
       // logic for successful response
-      $.toast(toast.scrap_success);
+
       const res = await response.json();
-      console.log("Purchase Tracker Response : ");
+      console.log("Purchase Tracker tm_get_confirmation_data Response : ");
       console.log(res);
 
       // send message to popup and sidepanel
-      chrome.runtime.sendMessage({ cmd: "confirmation_response", content: res });
-    } else if (response.status === 440) {
-      // display price and special offers fetch status with jquery toast
-      $.toast(toast.scrap_error);
-
-      chrome.runtime.sendMessage({ cmd: "login_time_out", content: "" });
-    } else {
+      chrome.runtime.sendMessage({ cmd: "tm_get_confirmation_data", content: res });
+      tm_post_confirmation_data(res)
+    }else {
       // display any fetch status with jquery toast
-      $.toast(toast.scrap_error);
 
-      chrome.runtime.sendMessage({ cmd: "unknown_response", content: response.status });
+      chrome.runtime.sendMessage({ cmd: "tm_get_confirmation_data_unknown_response", content: response.status });
     }
   } catch (err) {
-    console.warn({ where: "Error in  get_ticketmaster_confirmation_page", e: err });
-    $.toast(toast.all_error);
+    console.warn({ where: "Error in  tm_get_confirmation_data", e: err });
   }
 }
-// toast configs
-const toast = {
-  scrap_success: {
-    heading: "Scrap Success",
-    text: "Purchase Tracker Extension was able to scrap data!",
-    showHideTransition: "slide",
-    position: "mid-center",
-    icon: "success",
-    allowToastClose: true,
-    hideAfter: 1000 * 5, // hide after 5 sec
-  },
-  scrap_error: {
-    heading: "Scrap Error",
-    text: "Purchase Tracker Extension was unable to scrap data!",
-    showHideTransition: "fade",
-    position: "mid-center",
-    icon: "error",
-    allowToastClose: true,
-    hideAfter: 1000 * 20, // hide after 5 sec
-  },
-  post_success: {
-    heading: "Post Success",
-    text: "Purchase Tracker Extension was successful to post scrap data!",
-    showHideTransition: "slide",
-    position: "mid-center",
-    icon: "success",
-    allowToastClose: true,
-    hideAfter: 1000 * 5, // hide after 5 sec
-  },
-  post_error: {
-    heading: "Post Error",
-    text: "Purchase Tracker Extension was unsuccessful to post scrap data!",
-    showHideTransition: "fade",
-    position: "mid-center",
-    icon: "error",
-    allowToastClose: true,
-    hideAfter: 1000 * 5, // hide after 5 sec
-  },
-  post_info: {
-    heading: "Post Information",
-    text: "Purchase Tracker Extension can not proceed with Posting cause Scrapping failed.",
-    showHideTransition: "fade",
-    position: "mid-center",
-    icon: "info",
-    allowToastClose: true,
-    hideAfter: 1000 * 5, // hide after 5 sec
-  },
-  all_error: {
-    heading: "Scrapping and Posting Error",
-    text: "Purchase Tracker Extension was unable to Scrap or Post data!",
-    showHideTransition: "plain",
-    position: "mid-center",
-    icon: "error",
-    allowToastClose: true,
-    hideAfter: false,
-  },
-  get_event_id_error: {
-    heading: "Get Event Id Error",
-    text: "Purchase Tracker Extension was unable to Get Event Id!",
-    showHideTransition: "plain",
-    position: "mid-center",
-    icon: "error",
-    allowToastClose: true,
-    hideAfter: false,
-  },
-};
-var query =
-  `
+async function tm_post_confirmation_data(params) {
+  try {
+    const url = "https://browser-data-capture-api-staging.ticketboat-admin.com/store_browser_data";
+    const response = await fetch(url, {
+      credentials: "include",
+      method: "POST",
+      headers: {
+        Accept: "/",
+        "Accept-Encoding": "gzip, deflate, br, zstd",
+        "Content-Type": "text/plain;charset=UTF-8",
+        "accept-language": "en-US,en;q=0.9",
+        "sec-ch-ua": '".Not/A)Brand";v="99", "Google Chrome";v="103", "Chromium";v="103"',
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": '"Windows"',
+        "sec-fetch-dest": "empty",
+        "sec-fetch-mode": "cors",
+        "sec-fetch-site": "same-site",
+      },
+
+      body: JSON.stringify({
+        id: params.data.getSessionStatus.requestId,
+        created: new Date().toISOString(),
+        type: "purchase_confirmation",
+        data: params.data,
+      }),
+    });
+
+    if (response.status === 200) {
+      // logic for successful response
+
+      const res = await response.json();
+      console.log("Purchase Tracker tm_post_confirmation_data Response : ");
+      console.log(res);
+
+      // send message to popup and sidepanel
+      chrome.runtime.sendMessage({ cmd: "tm_post_confirmation_data", content: res });
+    } else {
+      // display any fetch status with jquery toast
+
+      chrome.runtime.sendMessage({ cmd: "tm_post_confirmation_data_unknown_response", content: response.status });
+    }
+  } catch (err) {
+    console.warn({ where: "Error in tm_post_confirmation_data", e: err });
+  }
+}
+var query = `
 query purchaseStatusQuery($getSessionStatusInput: GetSessionStatusInput!) {
   getSessionStatus(getSessionStatusInput: $getSessionStatusInput) {
     errors {
@@ -473,4 +445,4 @@ query purchaseStatusQuery($getSessionStatusInput: GetSessionStatusInput!) {
     }
   }
 }
-`
+`;

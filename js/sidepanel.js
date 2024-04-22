@@ -51,14 +51,14 @@ async function full_page_screenshot() {
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   try {
     // display table data
-    if (request.cmd === "confirmation_response") {
-      console.log("Confirmation Response : ");
+    if (request.cmd === "tm_get_confirmation_data") {
+      console.log("TM Get Confirmation Data Response : ");
       console.log(request.content);
       // clear table content first
-      $("#table_container").empty();
+      $("#tm_get_confirmation_table").empty();
       // add table head
-      $("#table_container").append(`
-      <h1 class="display-6">Confirmation Details...</h1>
+      $("#tm_get_confirmation_table").append(`
+      <h1 class="display-6">TM Get Confirmation Data Response </h1>
       
                   <table class="table table-striped">
                       <thead>
@@ -90,9 +90,43 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
                           <td>${request.content.data.getSessionStatus.purchaseStatusResponse.ticketOrderItems[0].ticketTypes[0].quantity}</td>
                           
                       </tr>`);
-    } else if (request.cmd === "unknown_response") {
-      $("#table_container").append(`
+    } else if (request.cmd === "tm_get_confirmation_data_unknown_response") {
+      $("#tm_get_confirmation_table").append(`
       <h1 class="display-6">Confirmation Details... Unknown Response</h1>
+      <h1 class="display-6">Status... ${request.content}</h1>
+      `);
+    } else if (request.cmd === "tm_post_confirmation_data") {
+      console.log("TM Post Confirmation Data Response : ");
+      console.log(request.content);
+      // clear table content first
+      $("#tm_post_confirmation_table").empty();
+      // add table head
+      $("#tm_post_confirmation_table").append(`
+      <h1 class="display-6">TM Post Confirmation Data Response</h1>
+      
+                  <table class="table table-striped">
+                      <thead>
+                          <tr>
+                              <th scope="col">Key</th>
+                              <th scope="col">Value</th>
+                  
+                          </tr>
+                      </thead>
+                  <tbody id="tbody">           
+          
+                  </tbody>
+              </table>`);
+
+      // populate table body
+
+      $("#tbody").append(`<tr>
+                                  <th scope="row">Post Response</th>
+                                  <td>${JSON.stringify(request.content)}</td>
+                                  
+                              </tr>`);
+    } else if (request.cmd === "tm_post_confirmation_data_unknown_response") {
+      $("#tm_get_confirmation_table").append(`
+      <h1 class="display-6">tm_post_confirmation_data_unknown_response</h1>
       <h1 class="display-6">Status... ${request.content}</h1>
       `);
     }
