@@ -43,7 +43,9 @@ async function tm_get_confirmation_data(details) {
       return header.name == "request-name";
     });
     // if the request name is not purchase status, abort
-    if (Request_Name.value !== "purchaseStatus") {
+    if (!Request_Name) {
+      return;
+    } else if (Request_Name.value !== "purchaseStatus") {
       return;
     } else {
       fetch_confirmation_page = false;
@@ -94,7 +96,7 @@ async function tm_get_confirmation_data(details) {
     });
 
     const response = await fetch(details.url, {
-      credentials: "include",
+      //credentials: "include",
       method: "POST",
       headers: {
         Accept: "/",
@@ -138,8 +140,8 @@ async function tm_get_confirmation_data(details) {
 
       // send message to popup and sidepanel
       chrome.runtime.sendMessage({ cmd: "tm_get_confirmation_data", content: res });
-      tm_post_confirmation_data(res)
-    }else {
+      tm_post_confirmation_data(res);
+    } else {
       // display any fetch status with jquery toast
 
       chrome.runtime.sendMessage({ cmd: "tm_get_confirmation_data_unknown_response", content: response.status });
@@ -148,16 +150,17 @@ async function tm_get_confirmation_data(details) {
     console.warn({ where: "Error in  tm_get_confirmation_data", e: err });
   }
 }
-async function tm_post_confirmation_data(params) {
+async function tm_post_confirmation_data(response_data) {
   try {
     const url = "https://browser-data-capture-api-staging.ticketboat-admin.com/store_browser_data";
     const response = await fetch(url, {
-      credentials: "include",
+      //credentials: "include",
       method: "POST",
       headers: {
+        Authorization: "Bearer c703542300f64fc1ad0b28272e3d9a35",
         Accept: "/",
         "Accept-Encoding": "gzip, deflate, br, zstd",
-        "Content-Type": "text/plain;charset=UTF-8",
+        "Content-Type": "application/json",
         "accept-language": "en-US,en;q=0.9",
         "sec-ch-ua": '".Not/A)Brand";v="99", "Google Chrome";v="103", "Chromium";v="103"',
         "sec-ch-ua-mobile": "?0",
@@ -168,10 +171,10 @@ async function tm_post_confirmation_data(params) {
       },
 
       body: JSON.stringify({
-        id: params.data.getSessionStatus.requestId,
+        id: response_data.data.getSessionStatus.requestId,
         created: new Date().toISOString(),
         type: "purchase_confirmation",
-        data: params.data,
+        data: response_data,
       }),
     });
 
