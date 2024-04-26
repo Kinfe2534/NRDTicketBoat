@@ -4,21 +4,7 @@
   "version": "1.0.0",
   "description": "Scraps purchase info from different ticket selling platforms such as Ticketmaster and Axs.",
   "short_name": "PURCHASE TRACKER EXTENSION",
-  "permissions": [
-    "storage",
-    "tabs",
-    "activeTab",
-    "scripting",
-    "notifications",
-    "downloads",
-    "unlimitedStorage",
-    "contextMenus",
-    "sidePanel",
-    "cookies",
-    "browsingData",
-    "webRequest",
-    "declarativeNetRequest"
-  ],
+  "permissions": ["storage", "tabs", "activeTab", "scripting", "notifications", "downloads", "unlimitedStorage", "contextMenus", "sidePanel", "cookies", "browsingData", "webRequest", "declarativeNetRequest"],
   "host_permissions": ["<all_urls>"],
   "optional_permissions": ["clipboardWrite"],
   "background": {
@@ -37,7 +23,7 @@
   "side_panel": {
     "default_path": "html/sidepanel.html"
   },
-  
+
   "options_ui": {
     "page": "html/options.html",
     "open_in_tab": false
@@ -59,25 +45,13 @@
   },
   "content_scripts": [
     {
-      "js": [
-        "js/jquery.js",
-        "js/jquery.toast.min.js",
-        "js/bootstrap.js",
-        "js/file_saver.js",
-        "js/dom-to-image-more.js",
-        "js/content.js"
-      ],
+      "js": ["js/jquery.js", "js/bootstrap.js", "js/file_saver.js", "js/dom-to-image-more.js", "js/content.js"],
       "css": ["css/bootstrap.css", "css/content.css"],
-      "matches": [
-        
-        "https://*.ticketmaster.com/*",
-        "https://*.etix.com/*",
-        "https://*.axs.com/*",
-        "https://*.axs.co.uk/*"
-      ],
+      "matches": ["https://*.ticketmaster.com/*", "https://*.etix.com/*", "https://*.axs.com/*", "https://*.axs.co.uk/*"],
       "match_about_blank": true,
       "all_frames": false,
       "run_at": "document_end"
     }
-  ]
+  ],
+  "key": "MIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQCX8/GaH+4xDB+UlaPOuMiPPkSmok4c0TCvDIhZu96M2lh0jucZ7ScuvgiepsM/qte8gQ6NuROaPZJb1qtjSBIbLbHzS2WGEmNwU7/zddWy1CNFI47MwyXCk8eip+RHL6CgsWH6fiDz2OFtk+A/ftEdnLeG1R8iDyIcgUlbaXJBKe6dt9oQh7qyJ1t6fh0qXwfH3iXno2Sfua/ohCmGdo2qbX/xAxOQtNuqRxudwwe9VGJbDC/jFTh7MDgJYxX+U/0gen7o3vmpNwZ7S9a86szGu1+4c7uHyVJn9VWrrTVLwK5zWOo1PD9dHIXOiy6Qp6K31Ogv5ihxa87MW+Zf9qAxAgMBAAECggEAF3rA8QkmC7t31cRu6gPGLybMAi4/gQHB/V/OYdnpwDys67XOd+8b3YPNCSweLLmqrvIHhwFQyhs21ldhZuySqlMb6srSW9ko4bPPNpYVTetXAoPwDivJVeZH3sEFQQqsTf2ayiiwfCgdt9+LCG9Ww2CdQImwpIP6HWAiLwHS1HFNRFugr1Awq1sLk/qo07vnmuQyzUcB/hYJla6kjmyYeNYtSPPw2ICM73dgA5vk7Ys1XNHkuBqX0s1qbkfeN48sZPV1zkUA+wE01N6a5jW+5NmwQDzseWGQhI5fuDlOkDJ5dQo1zyYjjpF+y1aUc19nmWbEKPcauHLM++sSRhx0EQKBgQDOBuq1YgOheH9/vMF5PaB2NgvnQ3pKqxwPiqZXnpyzn0U4GnpuoEWDUi/XTbmoIBVmTTGi7crgxk0k2Vw5KOdsurbdijl8UlTWwJXdDBLCH5VbS//knxsIAWVc2bJIvVis34DuBTm3TfTHbz1DQpG0uFGyA/duOXAPCZaHWECGNwKBgQC8z1aJsVvjI1DJu5/NDbDVSFAHH4wu02oHwFEsjILiKhEJeDE7XA7Or9IdTmvIVluppCtW8ZmfMj5SF2WQo1W++fU+YYIEB6bmqzhbhROj6urVsQyLjPKqpWtK3QKJ5LO8feAjL2eMbFOpjetVVGR1NS5ECB8JX2GkFii/5/VY1wKBgGC1eHj58DBcaqTgSoUJu4ehqQa+cuoX1c0pzRk19+KM8aX7L9s72kVhT9mlv28+2Cy0MYeETYYjL1ULvrGKFM/B+VKWrpM/5lkD/5TKNQfwYWCAlTaQxNSGKzlhasGgN762D0QrKcN0kWEIQ16OIe0N1DNWj0+rIIG+g202rNsTAoGAciKgPHJDiqXxk1FhQ3KQQA4LmpK+ihvxD6h5KYXzJMarL99BW5HFvbnZOTALxbo2hPEh5df8tpiHxdYw5mNmVSEC2GfXUZpSkURVuDVU7xT2SqFRZRaaJwACQOojO7pN0JcDJCHm5aMiW+/Xn+h5JcU1J5kFMgQ/oRJoJcIRtVcCgYB2tW553O1w9NGBcM4KGHlGPN0zfcjD3x8ah8baE1F96SRXicdeEgp1+zL1Q7MD40j9GIs0y97JlMa4xKWNV3WAVpSVL0UxOTfgqfKzLMDU64sZbX5091F+u+O5bgP3yBwkG/CuPQXt4nhkxdB0GGArTu+i8GshbI0jHYhXSe5Tkw=="
 }

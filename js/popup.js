@@ -16,7 +16,15 @@ $("#full_page_screenshot").on("click", function () {
     console.warn({ where: "Error in take sidepanel Screenshot", e: err });
   }
 });
-
+$("#open_tracked").on("click", function () {
+  try {
+    chrome.tabs.create({
+      url: "html/tracked.html",
+    });
+  } catch (err) {
+    console.warn({ where: "Error in open_newtab", e: err });
+  }
+});
 $("#open_sidepanel").on("click", async function () {
   try {
     const tabs = await chrome.tabs.query({ active: true, currentWindow: true });

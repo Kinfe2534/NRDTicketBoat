@@ -1,0 +1,19 @@
+:root {
+  --bg: #d6f3da;
+  --border: #189200;
+  --padding: 1px;
+  --margin: 1px;
+  --border-radius: 4px;
+
+}
+body {
+  padding: 2px;
+  margin: 2px;
+}
+
+#nav {
+  padding: 2px;
+  margin: 2px;
+  border-width: thin;
+  border: 2px rgb(119, 223, 119) solid;
+}
