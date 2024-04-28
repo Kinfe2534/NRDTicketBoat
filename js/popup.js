@@ -16,13 +16,20 @@ $("#full_page_screenshot").on("click", function () {
     console.warn({ where: "Error in take sidepanel Screenshot", e: err });
   }
 });
-$("#open_tracked").on("click", function () {
+$("#open_dashboard").on("click", function () {
   try {
     chrome.tabs.create({
-      url: "html/tracked.html",
+      url: "html/dashboard.html",
     });
   } catch (err) {
-    console.warn({ where: "Error in open_newtab", e: err });
+    console.warn({ where: "Error in open_dashboard", e: err });
+  }
+});
+$("#add_record").on("click", function () {
+  try {
+    chrome.runtime.sendMessage({ cmd: "add_record", content: "" });
+  } catch (err) {
+    console.warn({ where: "Error in Popup add_record", e: err });
   }
 });
 $("#open_sidepanel").on("click", async function () {

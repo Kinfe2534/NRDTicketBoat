@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="/css/bootstrap.css" />
+    <link rel="stylesheet" href="/css/dashboard.css" />
+    <title>Purchase Tracker Dashboard</title>
+  </head>
+
+  <body>
+    <nav class="navbar navbar-light bg-light">
+      <div class="container-fluid">
+        <a class="navbar-brand"><img src="/images/icon.png" alt="" width="30" height="24" /> Purchase Tracker Dashboard</a>
+        <form class="d-flex">
+          <input class="form-control m-2" type="search" placeholder="Search" aria-label="Search" />
+          <button class="btn btn-outline-success m-2" type="submit">Search</button>
+          <button id="add_record" type="button" class="btn btn-outline-info  m-2">Add Record</button>
+          <button id="display_record" type="button" class="btn btn-sm btn-outline-secondary m-2">Display Record</button>
+          <button id="clear_all_records" type="button" class="btn btn-sm btn-outline-danger m-2">Clear All Records</button>
+      
+        </form>
+      </div>
+    </nav>
+    <div id="dashboard_table_container">
+
+    </div>
+    <script src="/js/jquery.js"></script>
+    <script src="/js/bootstrap.js"></script>
+    <script src="/js/dashboard.js"></script>
+  </body>
+</html>

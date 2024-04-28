@@ -1,103 +1,27 @@
-const ticket_sites = ["https://www.ticketmaster.com", "https://checkout.ticketmaster.com", "https://tix.axs.com", "https://shop.axs.co.uk", "https://www.axs.com", "https://q.axs.co.uk"];
-
-chrome.tabs.onUpdated.addListener(async (tabId, info, tab) => {
-  if (!tab.url) return;
-  const url = new URL(tab.url);
-  // Enables the side panel on google.com
-  if (ticket_sites.includes(url.origin)) {
-    await chrome.sidePanel.setOptions({
-      tabId,
-      path: "html/sidepanel.html",
-      enabled: true,
-    });
-  } else {
-    // Disables the side panel on all other sites
-    await chrome.sidePanel.setOptions({
-      tabId,
-      enabled: false,
-    });
+$(window).on("load", function () {
+  console.log("Hi, I am Purchase Tracker Dashboard.js :)");
+});
+$("#add_record").on("click", function () {
+  try {
+    create(sample_data);
+  } catch (err) {
+    console.warn({ where: "Error in Dashboard add_record", e: err });
   }
 });
-// context menu ["page", "selection", "image", "link"]
-chrome.runtime.onInstalled.addListener(function () {
-  chrome.contextMenus.create({
-    title: "Purchase Tracker ON/OFF",
-    contexts: ["all"],
-    id: "toggle_purchase_tracker",
-  });
-});
-
-chrome.contextMenus.onClicked.addListener(async function (info, tab) {
-  if (info.menuItemId === "toggle_purchase_tracker") {
-    let result = await chrome.storage.local.get(["status"]);
-    chrome.storage.local.set(
-      {
-        ["status"]: !result["status"],
-      },
-      function (result) {}
-    );
-
-    if (result["status"]) {
-      chrome.action.setIcon({ path: "/images/off.png" });
-    } else {
-      chrome.action.setIcon({ path: "/images/on.png" });
-    }
+$("#display_record").on("click", function () {
+  try {
+    readAll();
+  } catch (err) {
+    console.warn({ where: "Error in Dashboard readAll", e: err });
   }
 });
-//////////////////
-chrome.runtime.onMessage.addListener(async function (request, sender, sendResponse) {
-  setTimeout(() => {
-    if (request.cmd === "add_record") {
-      create(sample_data);
-    }
-  },100);
-});
-/////////////////////////////
-chrome.webRequest.onBeforeSendHeaders.addListener(
-  function (details) {
-    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-      chrome.tabs.sendMessage(tabs[0].id, { cmd: "from_webRequest_onBeforeSendHeaders", details: details }, function (response) {
-        // alert("hello again");
-      });
-    });
-  },
-  {
-    urls: ["https://checkout.ticketmaster.com/graphql"],
-    types: ["xmlhttprequest"],
-  },
-  ["requestHeaders", "extraHeaders"]
-);
-
-/////////////////////////////
-chrome.webRequest.onCompleted.addListener(
-  function (details) {
-    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-      chrome.tabs.sendMessage(tabs[0].id, { cmd: "from_webRequest_complete", details: details }, function (response) {
-        // alert("hello again");
-      });
-    });
-  },
-  {
-    urls: ["https://checkout.ticketmaster.com/graphql"],
-    types: ["xmlhttprequest"],
-  },
-  ["responseHeaders"]
-);
-//////////////////
-chrome.webRequest.onErrorOccurred.addListener(
-  function (e) {
-    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-      chrome.tabs.sendMessage(tabs[0].id, { cmd: "from_webRequest_error", id: e.requestId }, function (response) {
-        // alert("hello again");
-      });
-    });
-  },
-  {
-    urls: ["https://checkout.ticketmaster.com/graphql"],
-    types: ["xmlhttprequest"],
+$("#clear_all_records").on("click", function () {
+  try {
+    clearAll();
+  } catch (err) {
+    console.warn({ where: "Error in Dashboard clearAll", e: err });
   }
-);
-
+});
 // create purchase tracker db
 
 let db = null;
@@ -130,6 +54,42 @@ request.onsuccess = function (event) {
     console.log(event);
   };
 };
+// display data in the dashboard table
+function dashboard_table(stored_data) {
+  // clear table content first
+  $("#dashboard_table_container").empty();
+  // add table head
+  $("#dashboard_table_container").append(`
+  
+          <table class="table table-striped">
+                  <thead>
+                      <tr>
+                          <th scope="col">S/No</th>
+                          <th scope="col">Status</th>
+                          <th scope="col">Amount</th>
+                          <th scope="col">Quantity</th>
+              
+                      </tr>
+                  </thead>
+              <tbody id="tbody_get">           
+      
+              </tbody>
+          </table>`);
+
+  // populate table body
+  stored_data.forEach((element, index, arry) => {
+    $("#tbody_get").append(
+      `<tr>
+
+    <th scope="row">${index+1}</th>
+    <td>${element.data.data.getSessionStatus.purchaseStatusResponse.status}</td>
+    <td>$${(Number(element.data.data.getSessionStatus.purchaseStatusResponse.paymentMethods[0].chargeableAmount.subCurrencyValue) / 100).toFixed(2)}</td>
+    <td>${element.data.data.getSessionStatus.purchaseStatusResponse.ticketOrderItems[0].ticketTypes[0].quantity}</td>
+
+    </tr>`
+    );
+  });
+}
 // Purchase Tracker Create Read Update Delete Operations on DB
 function create(record) {
   if (db) {
@@ -155,21 +115,21 @@ function create(record) {
     });
   }
 }
-function read(email) {
+function readAll() {
   if (db) {
     const transaction = db.transaction(objectStoreName, "readonly");
     const objectStore = transaction.objectStore(objectStoreName);
 
     return new Promise((resolve, reject) => {
       transaction.oncomplete = function () {
-        console.log("ALL READ TRANSACTIONS COMPLETE.");
+        //console.log("ALL READ TRANSACTIONS COMPLETE.");
       };
 
       transaction.onerror = function () {
         console.log("PROBLEM READING RECORDS.");
       };
 
-      let request = objectStore.get(email);
+      let request = objectStore.getAll();
 
       request.onsuccess = function (event) {
         resolve(event.target.result);
@@ -199,7 +159,7 @@ function update(record) {
   }
 }
 
-function remove(email) {
+function clearAll() {
   if (db) {
     const transaction = db.transaction(objectStoreName, "readwrite");
     const objectStore = transaction.objectStore(objectStoreName);
@@ -215,10 +175,11 @@ function remove(email) {
         resolve(false);
       };
 
-      objectStore.delete(email);
+      objectStore.clear();
     });
   }
 }
+
 const sample_data = {
   id: "59ab151aa3ca436aa1aaa68f6f37bdc4",
   created: new Date().toISOString(),
@@ -416,3 +377,25 @@ const sample_data = {
     },
   },
 };
+
+let initial_timer = setInterval(() => {
+  if (db) {
+    console.log("db found");
+    clearInterval(initial_timer);
+    readAll().then((result) => {
+      dashboard_table(result);
+    });
+  } else {
+    console.log("no db yet");
+  }
+}, 100);
+let update_timer = setInterval(() => {
+  if (db) {
+    //console.log("db found");
+    readAll().then((result) => {
+      dashboard_table(result);
+    });
+  } else {
+    console.log("no db yet");
+  }
+}, 1 * 1000);
