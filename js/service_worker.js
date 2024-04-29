@@ -46,8 +46,14 @@ chrome.contextMenus.onClicked.addListener(async function (info, tab) {
 });
 //////////////////
 chrome.runtime.onMessage.addListener(async function (request, sender, sendResponse) {
-  setTimeout(() => {
+  setTimeout(async () => {
     if (request.cmd === "add_record") {
+      let result = await chrome.storage.local.get(["buyer_email"]);
+      if (result.buyer_email) {
+        sample_data.email = result.buyer_email;
+      } else {
+        sample_data.email = "john.doe@ticketboat.com";
+      }
       create(sample_data);
     }
   },100);

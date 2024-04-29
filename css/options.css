@@ -11,8 +11,10 @@ body {
   margin: 8px;
 }
 
-#container {
-  width: auto;
+.container {
+  padding: 2px;
+  margin: 8px;
+  width: 500px;
   height: auto;
   border: 2px green solid;
   border-radius: var(--border-radius);

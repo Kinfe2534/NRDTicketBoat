@@ -1,8 +1,14 @@
 $(window).on("load", function () {
   console.log("Hi, I am Purchase Tracker Dashboard.js :)");
 });
-$("#add_record").on("click", function () {
+$("#add_record").on("click", async function () {
   try {
+    let result = await chrome.storage.local.get(["buyer_email"]);
+    if (result.buyer_email) {
+      sample_data.email = result.buyer_email;
+    } else {
+      sample_data.email = "john.doe@ticketboat.com";
+    }
     create(sample_data);
   } catch (err) {
     console.warn({ where: "Error in Dashboard add_record", e: err });
@@ -65,7 +71,7 @@ function dashboard_table(stored_data) {
                   <thead>
                       <tr>
                           <th scope="col">S/No</th>
-                          <th scope="col">Status</th>
+                          <th scope="col">Buyer Email</th>
                           <th scope="col">Amount</th>
                           <th scope="col">Quantity</th>
               
@@ -81,8 +87,8 @@ function dashboard_table(stored_data) {
     $("#tbody_get").append(
       `<tr>
 
-    <th scope="row">${index+1}</th>
-    <td>${element.data.data.getSessionStatus.purchaseStatusResponse.status}</td>
+    <th scope="row">${index + 1}</th>
+    <td>${element.email}</td>
     <td>$${(Number(element.data.data.getSessionStatus.purchaseStatusResponse.paymentMethods[0].chargeableAmount.subCurrencyValue) / 100).toFixed(2)}</td>
     <td>${element.data.data.getSessionStatus.purchaseStatusResponse.ticketOrderItems[0].ticketTypes[0].quantity}</td>
 
@@ -184,6 +190,7 @@ const sample_data = {
   id: "59ab151aa3ca436aa1aaa68f6f37bdc4",
   created: new Date().toISOString(),
   type: "tm_purchase_confirmation",
+  email: "john.doe@ticketboat.com",
   data: {
     data: {
       getSessionStatus: {
@@ -398,4 +405,4 @@ let update_timer = setInterval(() => {
   } else {
     console.log("no db yet");
   }
-}, 1 * 1000);
+}, 100);
