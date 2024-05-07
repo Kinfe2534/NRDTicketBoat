@@ -2,18 +2,33 @@ $(window).on("load", function () {
   console.log("Hi, I am Ticketboat popup.js :)");
 });
 
-$("#visible_tab_screenshot").on("click", function () {
+$("#take_visible_tab_screenshot").on("click", function () {
   try {
-    visible_tab_screenshot();
+    // take visible tab image
+    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+      chrome.tabs.captureVisibleTab(tabs.windowId, { format: "png" }, (image) => {
+        // image is base64
+        // download image with potrace
+
+        let a = document.createElement("a");
+        a.download = "pt_visible_tab_screenshot.png";
+        a.href = image;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      });
+    });
   } catch (err) {
     console.warn({ where: "Error in popup screenshot", e: err });
   }
 });
-$("#full_page_screenshot").on("click", function () {
+$("#take_fullpage_screenshot").on("click", function () {
   try {
-    full_page_screenshot();
-  } catch (err) {
-    console.warn({ where: "Error in take sidepanel Screenshot", e: err });
+    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+      chrome.tabs.sendMessage(tabs[0].id, { cmd: "take_fullpage_screenshot" }, function (response) {});
+    });
+  } catch (e) {
+    console.warn(e);
   }
 });
 $("#open_dashboard").on("click", function () {
@@ -25,11 +40,11 @@ $("#open_dashboard").on("click", function () {
     console.warn({ where: "Error in open_dashboard", e: err });
   }
 });
-$("#add_record").on("click", function () {
+$("#add_sample_record").on("click", function () {
   try {
-    chrome.runtime.sendMessage({ cmd: "add_record", content: "" });
+    chrome.runtime.sendMessage({ cmd: "add_sample_record", content: "" });
   } catch (err) {
-    console.warn({ where: "Error in Popup add_record", e: err });
+    console.warn({ where: "Error in Popup add_sample_record", e: err });
   }
 });
 $("#open_sidepanel").on("click", async function () {
@@ -48,34 +63,12 @@ $("#open_sidepanel").on("click", async function () {
     console.warn({ where: "Error open_sidepanel", e: err });
   }
 });
-async function visible_tab_screenshot() {
+$("#open_options").on("click", function () {
   try {
-    // take visible tab image
-    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-      chrome.tabs.captureVisibleTab(tabs.windowId, { format: "png" }, (image) => {
-        // image is base64
-        // download image with potrace
-
-        let a = document.createElement("a");
-        a.download = "pt_visible_tab_screenshot.png";
-        a.href = image;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-      });
+    chrome.tabs.create({
+      url: "html/options.html",
     });
-  } catch (e) {
-    console.warn(e);
+  } catch (err) {
+    console.warn({ where: "Error in Popup options", e: err });
   }
-  console.log("Screenshot Taken from popup :)...dummy test");
-}
-
-async function full_page_screenshot() {
-  try {
-    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-      chrome.tabs.sendMessage(tabs[0].id, { cmd: "take_fullpage_screenshot", selector: $("#selector").val() }, function (response) {});
-    });
-  } catch (e) {
-    console.warn(e);
-  }
-}
+});

@@ -2,23 +2,7 @@ $(window).on("load", function () {
   console.log("Hi, I am Ticketboat sidepanel.js :)");
 });
 
-$("#visible_tab_screenshot").on("click", function () {
-  try {
-    visible_tab_screenshot();
-  } catch (err) {
-    console.warn({ where: "Error in take sidepanel Screenshot", e: err });
-  }
-});
-
-$("#full_page_screenshot").on("click", function () {
-  try {
-    full_page_screenshot();
-  } catch (err) {
-    console.warn({ where: "Error in take sidepanel Screenshot", e: err });
-  }
-});
-
-async function visible_tab_screenshot() {
+$("#take_visible_tab_screenshot").on("click", function () {
   try {
     // take visible tab image
     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
@@ -27,33 +11,34 @@ async function visible_tab_screenshot() {
         // download image with potrace
 
         let a = document.createElement("a");
-        a.download = "ticketboat_capture.png";
+        a.download = "pt_visible_tab_screenshot.png";
         a.href = image;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
       });
     });
-  } catch (e) {
-    console.warn(e);
+  } catch (err) {
+    console.warn({ where: "Error in sidepanel take_visible_tab_screenshot", e: err });
   }
-}
-async function full_page_screenshot() {
+});
+
+$("#take_fullpage_screenshot").on("click", function () {
   try {
     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
       chrome.tabs.sendMessage(tabs[0].id, { cmd: "take_fullpage_screenshot" }, function (response) {});
     });
-  } catch (e) {
-    console.warn(e);
+  } catch (err) {
+    console.warn({ where: "Error in take sidepanel Screenshot", e: err });
   }
-}
+});
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   try {
     // display table data
     if (request.cmd === "tm_get_confirmation_data") {
       console.log("TM Get Confirmation Data Response : ");
-      console.log(request.content);
+      console.log(request.tm_confirmation_res);
       // clear table content first
       $("#tm_get_confirmation_table").empty();
       // add table head
@@ -77,17 +62,17 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 
       $("#tbody_get").append(`<tr>
                                   <th scope="row">Purchase Status</th>
-                                  <td>${request.content.data.getSessionStatus.purchaseStatusResponse.status}</td>
+                                  <td>${request.tm_confirmation_res.data.data.getSessionStatus.purchaseStatusResponse.status}</td>
                                   
                               </tr>`);
       $("#tbody_get").append(`<tr>
                               <th scope="row">Total Amount</th>
-                              <td>$${(Number(request.content.data.getSessionStatus.purchaseStatusResponse.paymentMethods[0].chargeableAmount.subCurrencyValue) / 100).toFixed(2)}</td>
+                              <td>$${(Number(request.tm_confirmation_res.data.data.getSessionStatus.purchaseStatusResponse.paymentMethods[0].chargeableAmount.subCurrencyValue) / 100).toFixed(2)}</td>
                               
                           </tr>`);
       $("#tbody_get").append(`<tr>
                           <th scope="row">Quantity</th>
-                          <td>${request.content.data.getSessionStatus.purchaseStatusResponse.ticketOrderItems[0].ticketTypes[0].quantity}</td>
+                          <td>${request.tm_confirmation_res.data.data.getSessionStatus.purchaseStatusResponse.ticketOrderItems[0].ticketTypes[0].quantity}</td>
                           
                       </tr>`);
     } else if (request.cmd === "tm_get_confirmation_data_unknown_response") {

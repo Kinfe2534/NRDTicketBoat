@@ -1,24 +1,25 @@
 $(window).on("load", function () {
   console.log("Hi, I am Ticketboat content.js :)");
 });
-var fetch_confirmation_page = true;
+var tm_fetch_confirmation_page = true;
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   if (request.cmd === "take_fullpage_screenshot") {
-    console.log("full page test");
-    full_page_screenshot(request.selector);
+    take_fullpage_screenshot();
   } else if (request.cmd === "from_webRequest_onBeforeSendHeaders") {
-    console.log("On Before send headers received :");
-    console.log(request.details);
-    if (fetch_confirmation_page) {
+    if (tm_fetch_confirmation_page) {
       tm_get_confirmation_data(request.details);
     }
   }
 });
 
-async function full_page_screenshot(selector) {
+async function take_fullpage_screenshot() {
   try {
-    console.log("Selector : " + selector);
-    const node = $(selector).get(0);
+    let result = null;
+    if (window.location.origin === "https://checkout.ticketmaster.com" || window.location.origin === "https://www.ticketmaster.com") {
+      result = await chrome.storage.local.get(["tm_fullpage_screenshot_selector"]);
+    } else {
+    }
+    const node = $(result["tm_fullpage_screenshot_selector"]).get(0);
 
     domtoimage
       .toBlob(node, {
@@ -28,10 +29,11 @@ async function full_page_screenshot(selector) {
         const reader = new FileReader();
         reader.readAsDataURL(blob);
         reader.onloadend = function () {
-          saveAs(reader.result, "ticketboat_fullpage_screenshot.png");
+          saveAs(reader.result, "pt_tm_fullpage_screenshot.png");
         };
       });
   } catch (e) {
+    console.log("Error in take_fullpage_screenshot");
     console.warn(e);
   }
 }
@@ -126,7 +128,7 @@ async function tm_get_confirmation_data(details) {
       },
 
       body: JSON.stringify({
-        query: query,
+        query: tm_query,
         variables: { getSessionStatusInput: { requestId: Referer.value.split("?")[0].split("/")[4] } },
       }),
     });
@@ -138,9 +140,20 @@ async function tm_get_confirmation_data(details) {
       console.log("Purchase Tracker tm_get_confirmation_data Response : ");
       console.log(res);
 
+      const tm_confirmation_res = {
+        id: res.data.getSessionStatus.requestId,
+        created: new Date().toISOString(),
+        type: "tm_purchase_confirmation",
+        data: res,
+      };
+      // add buyer email
+      let result = await chrome.storage.local.get(["buyer_email"]);
+      tm_confirmation_res.email = result["buyer_email"];
       // send message to popup and sidepanel
-      chrome.runtime.sendMessage({ cmd: "tm_get_confirmation_data", content: res });
-      tm_post_confirmation_data(res);
+      chrome.runtime.sendMessage({ cmd: "tm_get_confirmation_data", tm_confirmaiton_res: tm_confirmation_res });
+      //chrome.runtime.sendMessage({ cmd: "tm_add_indexeddb_record", tm_confirmaiton_res: tm_confirmation_res });
+      
+      tm_post_confirmation_data(tm_confirmation_res);
     } else {
       // display any fetch status with jquery toast
 
@@ -150,7 +163,7 @@ async function tm_get_confirmation_data(details) {
     console.warn({ where: "Error in  tm_get_confirmation_data", e: err });
   }
 }
-async function tm_post_confirmation_data(response_data) {
+async function tm_post_confirmation_data(tm_confirmaiton_res) {
   try {
     const url = "https://browser-data-capture-api-staging.ticketboat-admin.com/store_browser_data";
     const response = await fetch(url, {
@@ -170,12 +183,7 @@ async function tm_post_confirmation_data(response_data) {
         "sec-fetch-site": "same-site",
       },
 
-      body: JSON.stringify({
-        id: response_data.data.getSessionStatus.requestId,
-        created: new Date().toISOString(),
-        type: "purchase_confirmation",
-        data: response_data,
-      }),
+      body: JSON.stringify(tm_confirmaiton_res),
     });
 
     if (response.status === 200) {
@@ -196,7 +204,7 @@ async function tm_post_confirmation_data(response_data) {
     console.warn({ where: "Error in tm_post_confirmation_data", e: err });
   }
 }
-var query = `
+var tm_query = `
 query purchaseStatusQuery($getSessionStatusInput: GetSessionStatusInput!) {
   getSessionStatus(getSessionStatusInput: $getSessionStatusInput) {
     errors {
