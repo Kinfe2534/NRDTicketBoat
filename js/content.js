@@ -14,12 +14,10 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 
 async function take_fullpage_screenshot() {
   try {
-    let result = null;
-    if (window.location.origin === "https://checkout.ticketmaster.com" || window.location.origin === "https://www.ticketmaster.com") {
-      result = await chrome.storage.local.get(["tm_fullpage_screenshot_selector"]);
-    } else {
-    }
-    const node = $(result["tm_fullpage_screenshot_selector"]).get(0);
+    let result = await chrome.storage.local.get(["tm_fullpage_screenshot_selector"])
+    let selector=result["tm_fullpage_screenshot_selector"]
+  
+    const node = $(selector).get(0);
 
     domtoimage
       .toBlob(node, {
@@ -50,7 +48,7 @@ async function tm_get_confirmation_data(details) {
     } else if (Request_Name.value !== "purchaseStatus") {
       return;
     } else {
-      fetch_confirmation_page = false;
+      tm_fetch_confirmation_page = false;
     }
 
     const Fastly_Client_Ip = details["requestHeaders"].find((header) => {
