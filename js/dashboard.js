@@ -12,13 +12,14 @@ $("#add_sample_record").on("click", async function () {
 $("#clear_all_records").on("click", function () {
   try {
     clearAll();
+    udpate_table();
   } catch (err) {
     console.warn({ where: "Error in Dashboard clearAll", e: err });
   }
 });
 
 // display data in the dashboard table
-function dashboard_table(tm_confirmaiton_res) {
+function dashboard_table(indexeddb_data) {
   // clear table content first
   $("#dashboard_table_container").empty();
   // add table head
@@ -42,15 +43,15 @@ function dashboard_table(tm_confirmaiton_res) {
           </table>`);
 
   // populate table body
-  tm_confirmaiton_res.forEach((element, index, arry) => {
+  indexeddb_data.forEach((tm_confirmation_res, index, arry) => {
     $("#tbody_get").append(
       `<tr>
         <th scope="row">${index + 1}</th>
-        <td>${element.email}</td>
-        <td>${element.created}</td>
-        <td>${element.type}</td>
-        <td>$${(Number(element.data.data.getSessionStatus.purchaseStatusResponse.paymentMethods[0].chargeableAmount.subCurrencyValue) / 100).toFixed(2)}</td>
-        <td>${element.data.data.getSessionStatus.purchaseStatusResponse.ticketOrderItems[0].ticketTypes[0].quantity}</td>
+        <td>${tm_confirmation_res.email}</td>
+        <td>${tm_confirmation_res.created}</td>
+        <td>${tm_confirmation_res.type}</td>
+        <td>$${(Number(tm_confirmation_res.data.data.getSessionStatus.purchaseStatusResponse.paymentMethods[0].chargeableAmount.subCurrencyValue) / 100).toFixed(2)}</td>
+        <td>${tm_confirmation_res.data.data.getSessionStatus.purchaseStatusResponse.ticketOrderItems[0].ticketTypes[0].quantity}</td>
         <td><button type="button" class="btn btn-outline-info btn-sm">Expand</button></td>
     </tr>`
     );
@@ -61,9 +62,7 @@ let initialize_table = setInterval(() => {
   if (db) {
     console.log("db found");
     clearInterval(initialize_table);
-    readAll().then((result) => {
-      dashboard_table(result);
-    });
+    udpate_table();
   } else {
     console.log("no db yet");
   }
@@ -71,8 +70,11 @@ let initialize_table = setInterval(() => {
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   if (request.cmd === "indexeddb_updated") {
-    readAll().then((result) => {
-      dashboard_table(result);
-    });
+    udpate_table();
   }
 });
+async function udpate_table() {
+  readAll().then((result) => {
+    dashboard_table(result);
+  });
+}

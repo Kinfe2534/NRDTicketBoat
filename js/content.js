@@ -142,7 +142,7 @@ async function tm_get_confirmation_data(details) {
 
       const tm_confirmation_res = {
         id: res.data.getSessionStatus.requestId,
-        created: new Date().toISOString(),
+        created: new Date(),
         type: "tm_purchase_confirmation",
         data: res,
       };
@@ -150,9 +150,9 @@ async function tm_get_confirmation_data(details) {
       let result = await chrome.storage.local.get(["buyer_email"]);
       tm_confirmation_res.email = result["buyer_email"];
       // send message to popup and sidepanel
-      chrome.runtime.sendMessage({ cmd: "tm_get_confirmation_data", tm_confirmaiton_res: tm_confirmation_res });
-      //chrome.runtime.sendMessage({ cmd: "tm_add_indexeddb_record", tm_confirmaiton_res: tm_confirmation_res });
-      
+      chrome.runtime.sendMessage({ cmd: "tm_get_confirmation_data", tm_confirmation_res: tm_confirmation_res });
+      chrome.runtime.sendMessage({ cmd: "tm_add_indexeddb_record", tm_confirmation_res: tm_confirmation_res });
+
       tm_post_confirmation_data(tm_confirmation_res);
     } else {
       // display any fetch status with jquery toast
@@ -163,14 +163,16 @@ async function tm_get_confirmation_data(details) {
     console.warn({ where: "Error in  tm_get_confirmation_data", e: err });
   }
 }
-async function tm_post_confirmation_data(tm_confirmaiton_res) {
+async function tm_post_confirmation_data(tm_confirmation_res) {
   try {
-    const url = "https://browser-data-capture-api-staging.ticketboat-admin.com/store_browser_data";
+    //const url = "https://browser-data-capture-api-staging.ticketboat-admin.com/store_browser_data";
+    const url = "https://browser-data-capture-api.ticketboat-admin.com/store_browser_data";
     const response = await fetch(url, {
       //credentials: "include",
       method: "POST",
       headers: {
-        Authorization: "Bearer c703542300f64fc1ad0b28272e3d9a35",
+        /* Authorization: "Bearer c703542300f64fc1ad0b28272e3d9a35", */
+        Authorization: "Bearer 49b996be420e48a0ae4beae399438c78",
         Accept: "/",
         "Accept-Encoding": "gzip, deflate, br, zstd",
         "Content-Type": "application/json",
@@ -183,7 +185,7 @@ async function tm_post_confirmation_data(tm_confirmaiton_res) {
         "sec-fetch-site": "same-site",
       },
 
-      body: JSON.stringify(tm_confirmaiton_res),
+      body: JSON.stringify(tm_confirmation_res),
     });
 
     if (response.status === 200) {

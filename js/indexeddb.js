@@ -165,7 +165,7 @@ function clearAll() {
   }
   const sample_data = {
     id: "59ab151aa3ca436aa1aaa68f6f37bdc4",
-    created: new Date().toISOString(),
+    created: new Date(),
     type: "tm_purchase_confirmation",
     data: {
       data: {
