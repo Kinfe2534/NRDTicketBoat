@@ -5,6 +5,8 @@ $(window).on("load", function () {
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   if (request.cmd === "from_webRequest_onBeforeSendHeaders") {
     tm_get_confirmation_data(request.details);
+  } else if (request.cmd === "save_confirmation_capture") {
+    save_confirmation_capture(request.eventId, request.image);
   }
 });
 
@@ -126,7 +128,7 @@ async function tm_get_confirmation_data(details) {
 
       chrome.runtime.sendMessage({ cmd: "tm_add_indexeddb_record", tm_confirmation_res: tm_confirmation_res });
       // automaically take confirmation page screenshot
-      capture_confirmation(tm_confirmation_res.id);
+      chrome.runtime.sendMessage({ cmd: "confirmation_capture", eventId: tm_confirmation_res.data.data.getSessionStatus.purchaseStatusResponse.eventData.eventId });
       // post confirmation data to db
       tm_post_confirmation_data(tm_confirmation_res);
     } else {
@@ -425,23 +427,11 @@ query purchaseStatusQuery($getSessionStatusInput: GetSessionStatusInput!) {
   }
 }
 `;
-async function capture_confirmation(id) {
-  try {
-    // take visible tab image
-    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-      chrome.tabs.captureVisibleTab(tabs.windowId, { format: "png" }, (image) => {
-        // image is base64
-        // download image with potrace
-
-        let a = document.createElement("a");
-        a.download = "capture_confirmation" + id + ".png";
-        a.href = image;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-      });
-    });
-  } catch (err) {
-    console.warn({ where: "Error in popup capture_screenshot", e: err });
-  }
+function save_confirmation_capture(eventId, image) {
+  let a = document.createElement("a");
+  a.download = "capture_confirmation_" + eventId + ".png";
+  a.href = image;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
 }

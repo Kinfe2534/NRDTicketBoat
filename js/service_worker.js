@@ -17,14 +17,25 @@ chrome.runtime.onMessage.addListener(async function (request, sender, sendRespon
     setTimeout(async () => {
       create(request.tm_confirmation_res);
       chrome.runtime.sendMessage({ cmd: "indexeddb_updated", content: "" });
-    }, 100);
+    }, 10);
   } else if (request.cmd === "add_sample_record") {
     setTimeout(async () => {
       let result = await chrome.storage.local.get(["email"]);
       sample_data.email = result["email"];
       create(sample_data);
       chrome.runtime.sendMessage({ cmd: "indexeddb_updated", content: "" });
-    }, 100);
+    }, 10);
+  } else if (request.cmd === "confirmation_capture") {
+    setTimeout(async () => {
+      // take visible tab image
+      chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+        chrome.tabs.captureVisibleTab(tabs.windowId, { format: "png" }, (image) => {
+          // image is base64
+          // download image with potrace
+          chrome.tabs.sendMessage(tabs[0].id, { cmd: "save_confirmation_capture", eventId: request.eventId, image: image });
+        });
+      });
+    }, 10);
   }
 });
 /////////////////////////////

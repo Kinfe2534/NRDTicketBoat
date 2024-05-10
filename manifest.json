@@ -34,9 +34,9 @@
 
   "content_scripts": [
     {
-      "js": ["js/jquery.js", "js/file_saver.js", "js/content.js"],
+      "js": ["js/jquery.js", "js/content.js"],
       "css": [],
-      "matches": ["https://*.ticketmaster.com/*", "https://*.etix.com/*", "https://*.axs.com/*", "https://*.axs.co.uk/*"],
+      "matches": ["https://checkout.ticketmaster.com/*", "https://*.etix.com/*", "https://*.axs.com/*", "https://*.axs.co.uk/*"],
       "match_about_blank": true,
       "all_frames": false,
       "run_at": "document_end"
