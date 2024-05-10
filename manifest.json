@@ -20,9 +20,6 @@
     "default_title": "Purchase Tracker",
     "default_popup": "html/popup.html"
   },
-  "side_panel": {
-    "default_path": "html/sidepanel.html"
-  },
 
   "options_ui": {
     "page": "html/options.html",
@@ -34,18 +31,10 @@
     "48": "images/icon.png",
     "128": "images/icon.png"
   },
-  "declarative_net_request": {
-    "rule_resources": [
-      {
-        "id": "tm_cors_rulset",
-        "enabled": true,
-        "path": "ruleset/tm_cors_rulset.json"
-      }
-    ]
-  },
+
   "content_scripts": [
     {
-      "js": ["js/jquery.js", "js/bootstrap.js", "js/file_saver.js", "js/dom-to-image-more.js", "js/content.js"],
+      "js": ["js/jquery.js", "js/bootstrap.js", "js/file_saver.js", "js/content.js"],
       "css": ["css/bootstrap.css", "css/content.css"],
       "matches": ["https://*.ticketmaster.com/*", "https://*.etix.com/*", "https://*.axs.com/*", "https://*.axs.co.uk/*"],
       "match_about_blank": true,

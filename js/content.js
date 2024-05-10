@@ -1,40 +1,12 @@
 $(window).on("load", function () {
   console.log("Hi, I am Ticketboat content.js :)");
 });
-var tm_fetch_confirmation_page = true;
+
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-  if (request.cmd === "take_fullpage_screenshot") {
-    take_fullpage_screenshot();
-  } else if (request.cmd === "from_webRequest_onBeforeSendHeaders") {
-    if (tm_fetch_confirmation_page) {
-      tm_get_confirmation_data(request.details);
-    }
+  if (request.cmd === "from_webRequest_onBeforeSendHeaders") {
+    tm_get_confirmation_data(request.details);
   }
 });
-
-async function take_fullpage_screenshot() {
-  try {
-    let result = await chrome.storage.local.get(["tm_fullpage_screenshot_selector"])
-    let selector=result["tm_fullpage_screenshot_selector"]
-  
-    const node = $(selector).get(0);
-
-    domtoimage
-      .toBlob(node, {
-        imagePlaceholder: "data:image/gif;base64,R0lGODlhyAAiALM...DfD0QAADs=",
-      })
-      .then(function (blob) {
-        const reader = new FileReader();
-        reader.readAsDataURL(blob);
-        reader.onloadend = function () {
-          saveAs(reader.result, "pt_tm_fullpage_screenshot.png");
-        };
-      });
-  } catch (e) {
-    console.log("Error in take_fullpage_screenshot");
-    console.warn(e);
-  }
-}
 
 // fetch ticketmaster_confirmation_page
 async function tm_get_confirmation_data(details) {
@@ -45,10 +17,12 @@ async function tm_get_confirmation_data(details) {
     // if the request name is not purchase status, abort
     if (!Request_Name) {
       return;
-    } else if (Request_Name.value !== "purchaseStatus") {
+    }
+    if (!Request_Name.value) {
       return;
-    } else {
-      tm_fetch_confirmation_page = false;
+    }
+    if (Request_Name.value !== "purchaseStatus") {
+      return;
     }
 
     const Fastly_Client_Ip = details["requestHeaders"].find((header) => {
@@ -135,7 +109,7 @@ async function tm_get_confirmation_data(details) {
       // logic for successful response
 
       const res = await response.json();
-      console.log("Purchase Tracker tm_get_confirmation_data Response : ");
+      console.log("Purchase Tracker tm_get_confirmation_data Response : Success");
       console.log(res);
 
       const tm_confirmation_res = {
@@ -143,19 +117,19 @@ async function tm_get_confirmation_data(details) {
         created: new Date(),
         type: "tm_purchase_confirmation",
         data: res,
+        email: null,
       };
-      // add buyer email
-      let result = await chrome.storage.local.get(["buyer_email"]);
-      tm_confirmation_res.email = result["buyer_email"];
-      // send message to popup and sidepanel
-      chrome.runtime.sendMessage({ cmd: "tm_get_confirmation_data", tm_confirmation_res: tm_confirmation_res });
-      chrome.runtime.sendMessage({ cmd: "tm_add_indexeddb_record", tm_confirmation_res: tm_confirmation_res });
+      // add  email
+      let result = await chrome.storage.local.get(["email"]);
+      tm_confirmation_res.email = result["email"];
+      // send message to dashboard
 
+      chrome.runtime.sendMessage({ cmd: "tm_add_indexeddb_record", tm_confirmation_res: tm_confirmation_res });
+      // automaically take confirmation page screenshot
+      capture_confirmation(tm_confirmation_res.id);
+      // post confirmation data to db
       tm_post_confirmation_data(tm_confirmation_res);
     } else {
-      // display any fetch status with jquery toast
-
-      chrome.runtime.sendMessage({ cmd: "tm_get_confirmation_data_unknown_response", content: response.status });
     }
   } catch (err) {
     console.warn({ where: "Error in  tm_get_confirmation_data", e: err });
@@ -190,15 +164,9 @@ async function tm_post_confirmation_data(tm_confirmation_res) {
       // logic for successful response
 
       const res = await response.json();
-      console.log("Purchase Tracker tm_post_confirmation_data Response : ");
+      console.log("Purchase Tracker tm_post_confirmation_data Response : Success");
       console.log(res);
-
-      // send message to popup and sidepanel
-      chrome.runtime.sendMessage({ cmd: "tm_post_confirmation_data", content: res });
     } else {
-      // display any fetch status with jquery toast
-
-      chrome.runtime.sendMessage({ cmd: "tm_post_confirmation_data_unknown_response", content: response.status });
     }
   } catch (err) {
     console.warn({ where: "Error in tm_post_confirmation_data", e: err });
@@ -457,3 +425,18 @@ query purchaseStatusQuery($getSessionStatusInput: GetSessionStatusInput!) {
   }
 }
 `;
+async function capture_confirmation(id) {
+  try {
+    // image is base64
+    // download image with potrace
+
+    let a = document.createElement("a");
+    a.download = "capture_confirmation" + id + ".png";
+    a.href = image;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  } catch (err) {
+    console.warn({ where: "Error in popup capture_screenshot", e: err });
+  }
+}

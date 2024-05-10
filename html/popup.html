@@ -16,16 +16,19 @@
       </nav>
 
       <div class="d-grid gap-2">
-        <button id="take_visible_tab_screenshot" type="button" class="btn btn-sm btn-primary m-2">Visible Tab Screenshot</button>
-        <button id="take_fullpage_screenshot" type="button" class="btn btn-sm btn-success m-2">Fullpage Screenshot</button>
+        <button id="capture_confirmation" type="button" class="btn btn-sm btn-danger m-2">Capture Confirmation</button>
       </div>
-      <div id="popup_buttons" class="d-flex justify-content-between bd-highlight mb-2">
-        <button id="open_sidepanel" type="button" class="btn btn-sm btn-info m-2">Open Sidepanel</button>
-        <button id="open_dashboard" type="button" class="btn btn-sm btn-danger m-2">Open Dashboard</button>
-        <button id="open_options" type="button" class="btn btn-sm btn-light m-2">Open Options</button>
+      <div class="d-flex justify-content-between bd-highlight mb-2">
+        <button id="open_dashboard" type="button" class="btn btn-sm btn-info m-2">Open Dashboard</button>
+        <button id="open_options" type="button" class="btn btn-sm btn-warning m-2">Open Options</button>
       </div>
-      <div class="d-grid gap-2">
-        <button id="add_sample_record" type="button" class="btn btn-sm btn-warning m-2">Add Sample Record</button>
+
+      <div class="input-group input-group-sm p-2">
+        <span class="input-group-text" id="inputGroup-sizing-sm">Email</span>
+        <input id="email" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" />
+      </div>
+      <div class="d-flex justify-content-end bd-highlight mb-2">
+        <button id="save" type="button" class="btn btn-sm btn-success m-2">Save</button>
       </div>
     </div>
 
