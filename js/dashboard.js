@@ -34,6 +34,8 @@ function dashboard_table(indexeddb_data) {
                           <th scope="col">Type</th>
                           <th scope="col">Amount</th>
                           <th scope="col">Quantity</th>
+                          <th scope="col">Funding Method</th>
+                          <th scope="col">Last Four Digits</th>
               
                       </tr>
                   </thead>
@@ -52,7 +54,9 @@ function dashboard_table(indexeddb_data) {
         <td>${tm_confirmation_res.type}</td>
         <td>$${(Number(tm_confirmation_res.data.data.getSessionStatus.purchaseStatusResponse.paymentMethods[0].chargeableAmount.subCurrencyValue) / 100).toFixed(2)}</td>
         <td>${tm_confirmation_res.data.data.getSessionStatus.purchaseStatusResponse.ticketOrderItems[0].ticketTypes[0].quantity}</td>
-        <td><button type="button" class="btn btn-outline-info btn-sm">Expand</button></td>
+        <td>${tm_confirmation_res.data.data.getSessionStatus.purchaseStatusResponse.paymentMethods[0].fundingMethod}</td>
+        <td>${tm_confirmation_res.data.data.getSessionStatus.purchaseStatusResponse.paymentMethods[0].ccLast4Digits}</td>
+        
     </tr>`
     );
   });
