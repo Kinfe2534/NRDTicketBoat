@@ -427,15 +427,20 @@ query purchaseStatusQuery($getSessionStatusInput: GetSessionStatusInput!) {
 `;
 async function capture_confirmation(id) {
   try {
-    // image is base64
-    // download image with potrace
+    // take visible tab image
+    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+      chrome.tabs.captureVisibleTab(tabs.windowId, { format: "png" }, (image) => {
+        // image is base64
+        // download image with potrace
 
-    let a = document.createElement("a");
-    a.download = "capture_confirmation" + id + ".png";
-    a.href = image;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+        let a = document.createElement("a");
+        a.download = "capture_confirmation" + id + ".png";
+        a.href = image;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      });
+    });
   } catch (err) {
     console.warn({ where: "Error in popup capture_screenshot", e: err });
   }
