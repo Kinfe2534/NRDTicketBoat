@@ -1,7 +1,7 @@
 $(window).on("load", async function () {
   console.log("Hi, I am Ticketboat popup.js :)");
   let result = await chrome.storage.local.get(["email"]);
-  $("#email").val(result["email"]);
+  $("#email").attr("placeholder", result["email"]);
 });
 
 $("#capture_confirmation").on("click", function () {
@@ -51,6 +51,7 @@ $("#save").on("click", async function () {
       ["email"]: val,
     });
     chrome.runtime.sendMessage({ cmd: "email_updated", content: "" });
+    window.close();
   } catch (err) {
     console.warn({ where: "Error in popup save", e: err });
   }

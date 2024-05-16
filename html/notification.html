@@ -1,0 +1,28 @@
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">Purchase Tracker Email</h5>
+      </div>
+      <div class="modal-body">
+        <div class="input-group input-group-sm mb-3">
+          <span class="input-group-text" id="inputGroup-sizing-sm">Email</span>
+          <input id="email" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" />
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-sm btn-primary" id="save">Save</button>
+        <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="position-fixed top-0 end-0 p-3" style="z-index: 110000000000">
+  <div id="my_toast" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="toast-header" style="background-color: rgb(127, 197, 255)">
+      <strong class="me-auto">Purchase Tracker Email</strong>
+      <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+    <h5 id="toast_email" class="toast-body">john.doe@ticketboat.com</h5>
+  </div>
+</div>

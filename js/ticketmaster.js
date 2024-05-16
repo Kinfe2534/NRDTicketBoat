@@ -1,8 +1,8 @@
 $(window).on("load", function () {
-  console.log("Hi, I am Ticketboat content.js :)");
+  console.log("Hi, I am Ticketmaster.js :)");
 });
 
-chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+chrome.runtime.onMessage.addListener(async function (request, sender, sendResponse) {
   if (request.cmd === "from_webRequest_onBeforeSendHeaders") {
     tm_get_confirmation_data(request.details);
   } else if (request.cmd === "save_confirmation_capture") {
