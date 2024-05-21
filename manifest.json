@@ -49,7 +49,7 @@
     {
       "js": ["js/jquery.js", "js/bootstrap.js", "js/etix.js","js/notification.js"],
       "css": ["css/bootstrap.css"],
-      "matches": ["https://etix.com/*"],
+      "matches": ["https://www.etix.com/*","https://etix.com/*"],
       "match_about_blank": true,
       "all_frames": false,
       "run_at": "document_end"

@@ -14,15 +14,16 @@
         <form class="d-flex">
           <input class="form-control m-2" type="search" placeholder="Search" aria-label="Search" />
           <button class="btn btn-outline-success m-2" type="submit">Search</button>
-          <button id="add_sample_record" type="button" class="btn btn-outline-info  m-2">Add Sample Record</button>
+          <button id="add_sample_record_tm" type="button" class="btn btn-outline-info m-2">Add Sample Record TM</button>
+          <button id="add_sample_record_etix" type="button" class="btn btn-outline-info m-2">Add Sample Record Etix</button>
           <button id="clear_all_records" type="button" class="btn btn-sm btn-outline-danger m-2">Clear All Records</button>
-      
         </form>
       </div>
     </nav>
-    <div id="dashboard_table_container">
 
-    </div>
+    <div id="table_container_tm"></div>
+    <div id="table_container_etix"></div>
+
     <script src="/js/jquery.js"></script>
     <script src="/js/bootstrap.js"></script>
     <script src="/js/indexeddb.js"></script>

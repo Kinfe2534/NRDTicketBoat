@@ -3,15 +3,15 @@ $(window).on("load", function () {
 });
 
 chrome.runtime.onMessage.addListener(async function (request, sender, sendResponse) {
-  if (request.cmd === "from_webRequest_onBeforeSendHeaders") {
-    tm_get_confirmation_data(request.details);
-  } else if (request.cmd === "save_confirmation_capture") {
-    save_confirmation_capture(request.eventId, request.image);
+  if (request.cmd === "from_webRequest_onBeforeSendHeaders_tm") {
+    get_confirmation_data_tm(request.details);
+  } else if (request.cmd === "save_confirmation_capture_tm") {
+    save_confirmation_capture_tm(request.image);
   }
 });
 
 // fetch ticketmaster_confirmation_page
-async function tm_get_confirmation_data(details) {
+async function get_confirmation_data_tm(details) {
   try {
     const Request_Name = details["requestHeaders"].find((header) => {
       return header.name == "request-name";
@@ -111,33 +111,33 @@ async function tm_get_confirmation_data(details) {
       // logic for successful response
 
       const res = await response.json();
-      console.log("Purchase Tracker tm_get_confirmation_data Response : Success");
+      console.log("Purchase Tracker get_confirmation_data_tm Response : Success");
       console.log(res);
 
-      const tm_confirmation_res = {
+      const confirmation_res_tm = {
         id: res.data.getSessionStatus.requestId,
         created: new Date(),
-        type: "tm_purchase_confirmation",
+        type: "purchase_confirmation_tm",
         data: res,
         email: null,
       };
       // add  email
       let result = await chrome.storage.local.get(["email"]);
-      tm_confirmation_res.email = result["email"];
+      confirmation_res_tm.email = result["email"];
       // send message to dashboard
 
-      chrome.runtime.sendMessage({ cmd: "tm_add_indexeddb_record", tm_confirmation_res: tm_confirmation_res });
+      chrome.runtime.sendMessage({ cmd: "add_indexeddb_record_tm", confirmation_res_tm: confirmation_res_tm });
       // automaically take confirmation page screenshot
-      chrome.runtime.sendMessage({ cmd: "confirmation_capture", eventId: tm_confirmation_res.data.data.getSessionStatus.purchaseStatusResponse.eventData.eventId });
+      chrome.runtime.sendMessage({ cmd: "confirmation_capture_tm"});
       // post confirmation data to db
-      tm_post_confirmation_data(tm_confirmation_res);
+      post_confirmation_data_tm(confirmation_res_tm);
     } else {
     }
   } catch (err) {
     console.warn({ where: "Error in  tm_get_confirmation_data", e: err });
   }
 }
-async function tm_post_confirmation_data(tm_confirmation_res) {
+async function post_confirmation_data_tm(confirmation_res_tm) {
   try {
     //const url = "https://browser-data-capture-api-staging.ticketboat-admin.com/store_browser_data";
     const url = "https://browser-data-capture-api.ticketboat-admin.com/store_browser_data";
@@ -159,19 +159,19 @@ async function tm_post_confirmation_data(tm_confirmation_res) {
         "sec-fetch-site": "same-site",
       },
 
-      body: JSON.stringify(tm_confirmation_res),
+      body: JSON.stringify(confirmation_res_tm),
     });
 
     if (response.status === 200) {
       // logic for successful response
 
       const res = await response.json();
-      console.log("Purchase Tracker tm_post_confirmation_data Response : Success");
+      console.log("Purchase Tracker post_confirmation_data_tm Response : Success");
       console.log(res);
     } else {
     }
   } catch (err) {
-    console.warn({ where: "Error in tm_post_confirmation_data", e: err });
+    console.warn({ where: "Error in post_confirmation_data_tm", e: err });
   }
 }
 var tm_query = `
@@ -427,9 +427,9 @@ query purchaseStatusQuery($getSessionStatusInput: GetSessionStatusInput!) {
   }
 }
 `;
-function save_confirmation_capture(eventId, image) {
+function save_confirmation_capture_tm(image) {
   let a = document.createElement("a");
-  a.download = "capture_confirmation_" + eventId + ".png";
+  a.download = "capture_confirmation_tm.png";
   a.href = image;
   document.body.appendChild(a);
   a.click();

@@ -1,5 +1,6 @@
 importScripts("indexeddb.js");
 
+// set defaults on installation
 chrome.runtime.onInstalled.addListener(async function () {
   let result = await chrome.storage.local.get(["email"]);
   //check if ticketmaster fullscreenshot selector is available or set it
@@ -11,38 +12,11 @@ chrome.runtime.onInstalled.addListener(async function () {
   }
 });
 
-///////////////////////////
-chrome.runtime.onMessage.addListener(async function (request, sender, sendResponse) {
-  if (request.cmd === "tm_add_indexeddb_record") {
-    setTimeout(async () => {
-      create(request.tm_confirmation_res);
-      chrome.runtime.sendMessage({ cmd: "indexeddb_updated", content: "" });
-    }, 10);
-  } else if (request.cmd === "add_sample_record") {
-    setTimeout(async () => {
-      let result = await chrome.storage.local.get(["email"]);
-      sample_data.email = result["email"];
-      create(sample_data);
-      chrome.runtime.sendMessage({ cmd: "indexeddb_updated", content: "" });
-    }, 10);
-  } else if (request.cmd === "confirmation_capture") {
-    setTimeout(async () => {
-      // take visible tab image
-      chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-        chrome.tabs.captureVisibleTab(tabs.windowId, { format: "png" }, (image) => {
-          // image is base64
-          // download image with potrace
-          chrome.tabs.sendMessage(tabs[0].id, { cmd: "save_confirmation_capture", eventId: request.eventId, image: image });
-        });
-      });
-    }, 10);
-  }
-});
-/////////////////////////////
+// intercept requests from page ticketmaster
 chrome.webRequest.onBeforeSendHeaders.addListener(
   function (details) {
     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-      chrome.tabs.sendMessage(tabs[0].id, { cmd: "from_webRequest_onBeforeSendHeaders", details: details }, function (response) {
+      chrome.tabs.sendMessage(tabs[0].id, { cmd: "from_webRequest_onBeforeSendHeaders_tm", details: details }, function (response) {
         // alert("hello again");
       });
     });
@@ -53,3 +27,53 @@ chrome.webRequest.onBeforeSendHeaders.addListener(
   },
   ["requestHeaders", "extraHeaders"]
 );
+// intercept requests from page etix
+chrome.webRequest.onBeforeSendHeaders.addListener(
+  function (details) {
+    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+      chrome.tabs.sendMessage(tabs[0].id, { cmd: "from_webRequest_onBeforeSendHeaders_etix", details: details }, function (response) {
+        // alert("hello again");
+      });
+    });
+  },
+  {
+    urls: ["https://www.etix.com/ticket/mvc/legacyOnlineSale/performance/sale/deliverOrder", "https://etix.com/ticket/mvc/legacyOnlineSale/performance/sale/deliverOrder"],
+    types: ["xmlhttprequest"],
+  },
+  ["requestHeaders", "extraHeaders"]
+);
+
+// listen for messages from extension pages
+chrome.runtime.onMessage.addListener(async function (request, sender, sendResponse) {
+  if (request.cmd === "add_indexeddb_record_tm") {
+    setTimeout(async () => {
+      create(request.confirmation_res_tm);
+    }, 10);
+  } else if (request.cmd === "add_indexeddb_record_etix") {
+    setTimeout(async () => {
+      create(request.confirmation_res_etix);
+    }, 10);
+  } else if (request.cmd === "confirmation_capture_tm") {
+    setTimeout(async () => {
+      // take visible tab image
+      chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+        chrome.tabs.captureVisibleTab(tabs.windowId, { format: "png" }, (image) => {
+          // image is base64
+          // download image with potrace
+          chrome.tabs.sendMessage(tabs[0].id, { cmd: "save_confirmation_capture_tm", image: image });
+        });
+      });
+    }, 10);
+  }else if (request.cmd === "confirmation_capture_etix") {
+    setTimeout(async () => {
+      // take visible tab image
+      chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+        chrome.tabs.captureVisibleTab(tabs.windowId, { format: "png" }, (image) => {
+          // image is base64
+          // download image with potrace
+          chrome.tabs.sendMessage(tabs[0].id, { cmd: "save_confirmation_capture_etix",  image: image });
+        });
+      });
+    }, 10);
+  }
+});
