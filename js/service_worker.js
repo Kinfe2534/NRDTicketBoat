@@ -38,7 +38,7 @@ chrome.webRequest.onBeforeSendHeaders.addListener(
   },
   {
     urls: ["https://www.etix.com/ticket/mvc/legacyOnlineSale/performance/sale/deliverOrder", "https://etix.com/ticket/mvc/legacyOnlineSale/performance/sale/deliverOrder"],
-    types: ["xmlhttprequest"],
+    types: ["main_frame"],
   },
   ["requestHeaders", "extraHeaders"]
 );
@@ -64,14 +64,14 @@ chrome.runtime.onMessage.addListener(async function (request, sender, sendRespon
         });
       });
     }, 10);
-  }else if (request.cmd === "confirmation_capture_etix") {
+  } else if (request.cmd === "confirmation_capture_etix") {
     setTimeout(async () => {
       // take visible tab image
       chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
         chrome.tabs.captureVisibleTab(tabs.windowId, { format: "png" }, (image) => {
           // image is base64
           // download image with potrace
-          chrome.tabs.sendMessage(tabs[0].id, { cmd: "save_confirmation_capture_etix",  image: image });
+          chrome.tabs.sendMessage(tabs[0].id, { cmd: "save_confirmation_capture_etix", image: image });
         });
       });
     }, 10);

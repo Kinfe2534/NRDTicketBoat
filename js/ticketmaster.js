@@ -114,8 +114,8 @@ async function get_confirmation_data_tm(details) {
       console.log("Purchase Tracker get_confirmation_data_tm Response : Success");
       console.log(res);
 
-      const confirmation_res_tm = {
-        id: res.data.getSessionStatus.requestId,
+      var confirmation_res_tm = {
+        id: Math.random().toString().substring(2, 7) + Math.random().toString().substring(2, 7) + Math.random().toString().substring(2, 7) + Math.random().toString().substring(2, 7),
         created: new Date(),
         type: "purchase_confirmation_tm",
         data: res,
