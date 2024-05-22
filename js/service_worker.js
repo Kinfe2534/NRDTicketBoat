@@ -28,7 +28,7 @@ chrome.webRequest.onBeforeSendHeaders.addListener(
   ["requestHeaders", "extraHeaders"]
 );
 // intercept requests from page etix
-chrome.webRequest.onBeforeSendHeaders.addListener(
+/* chrome.webRequest.onBeforeSendHeaders.addListener(
   function (details) {
     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
       chrome.tabs.sendMessage(tabs[0].id, { cmd: "from_webRequest_onBeforeSendHeaders_etix", details: details }, function (response) {
@@ -42,7 +42,7 @@ chrome.webRequest.onBeforeSendHeaders.addListener(
   },
   ["requestHeaders", "extraHeaders"]
 );
-
+ */
 // listen for messages from extension pages
 chrome.runtime.onMessage.addListener(async function (request, sender, sendResponse) {
   if (request.cmd === "add_indexeddb_record_tm") {

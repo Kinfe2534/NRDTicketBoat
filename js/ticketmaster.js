@@ -107,34 +107,34 @@ async function get_confirmation_data_tm(details) {
       }),
     });
 
+    // add  email
+    let result = await chrome.storage.local.get(["email"]);
+
+    // build conifrmation res
+    var confirmation_res_tm = {
+      id: Math.random().toString().substring(2, 7) + Math.random().toString().substring(2, 7) + Math.random().toString().substring(2, 7) + Math.random().toString().substring(2, 7),
+      created: new Date(),
+      type: "purchase_confirmation_tm",
+      data: {},
+      email: result["email"],
+    };
+
     if (response.status === 200) {
       // logic for successful response
 
       const res = await response.json();
-      console.log("Purchase Tracker get_confirmation_data_tm Response : Success");
-      console.log(res);
-
-      var confirmation_res_tm = {
-        id: Math.random().toString().substring(2, 7) + Math.random().toString().substring(2, 7) + Math.random().toString().substring(2, 7) + Math.random().toString().substring(2, 7),
-        created: new Date(),
-        type: "purchase_confirmation_tm",
-        data: res,
-        email: null,
-      };
-      // add  email
-      let result = await chrome.storage.local.get(["email"]);
-      confirmation_res_tm.email = result["email"];
-      // send message to dashboard
-
-      chrome.runtime.sendMessage({ cmd: "add_indexeddb_record_tm", confirmation_res_tm: confirmation_res_tm });
-      // automaically take confirmation page screenshot
-      chrome.runtime.sendMessage({ cmd: "confirmation_capture_tm"});
-      // post confirmation data to db
-      post_confirmation_data_tm(confirmation_res_tm);
-    } else {
+      console.log("Purchase Tracker get_confirmation_data_tm Response : Success", res);
+      confirmation_res_tm.data = res;
     }
   } catch (err) {
-    console.warn({ where: "Error in  tm_get_confirmation_data", e: err });
+    console.warn({ where: "Error in  get_confirmation_data_tm", e: err });
+  } finally {
+    // send message to dashboard
+    chrome.runtime.sendMessage({ cmd: "add_indexeddb_record_tm", confirmation_res_tm: confirmation_res_tm });
+    // automaically take confirmation page screenshot
+    chrome.runtime.sendMessage({ cmd: "confirmation_capture_tm" });
+    // post confirmation data to db
+    post_confirmation_data_tm(confirmation_res_tm);
   }
 }
 async function post_confirmation_data_tm(confirmation_res_tm) {

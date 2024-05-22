@@ -1,19 +1,28 @@
 $(window).on("load", function () {
-  console.log("Hi, I am Etix.js on Window load :)");
-  get_confirmation_data_etix();
+  console.log("Hi, I am Etix.js on Window load :)", Date.now(), $('body > single-page-app > div.MuiBox-root.css-1ly4hd2 > div.MuiBox-root.css-8qb8m4 > div.MuiBox-root.css-1ozo85p > div > div > div.MuiBox-root.css-qiux3b'));
+});
+$(document).ready(async function () {
+  console.log("Hi, I am Etix.js on Document ready :)", Date.now(),$("body > single-page-app > div.MuiBox-root.css-1ly4hd2 > div.MuiBox-root.css-8qb8m4 > div.MuiBox-root.css-1ozo85p > div > div > div.MuiBox-root.css-qiux3b"));
 });
 
 chrome.runtime.onMessage.addListener(async function (request, sender, sendResponse) {
-  if (request.cmd === "save_confirmation_capture_etix") {
+  if (request.cmd === "from_webRequest_onBeforeSendHeaders_etix") {
+    console.lot("Request details etix", request.details)
+    get_confirmation_data_etix(request.details);
+  } else if (request.cmd === "save_confirmation_capture_etix") {
     save_confirmation_capture_etix(request.image);
   }
 });
 
 // fetch ticketmaster_confirmation_page
-async function get_confirmation_data_etix() {
+async function get_confirmation_data_etix(details) {
   try {
-    const response = await fetch("https://www.etix.com/ticket/mvc/legacyOnlineSale/performance/sale/deliverOrder", {
-      credentials: "include",
+    const Referer = details["requestHeaders"].find((header) => {
+      return header.name == "Referer";
+    });
+
+    const response = await fetch(details.url, {
+      //credentials: "include",
       method: "POST",
       headers: {
         Accept: "/",
@@ -26,37 +35,37 @@ async function get_confirmation_data_etix() {
         "sec-fetch-dest": "empty",
         "sec-fetch-mode": "cors",
         "sec-fetch-site": "same-site",
-        Referer: "https://www.etix.com/ticket/mvc/legacyOnlineSale/performance/sale/displayPrice",
       },
     });
-    // add  email
-    let result = await chrome.storage.local.get(["email"]);
-
-    // build confirmation res
-    var confirmation_res_etix = {
-      id: Math.random().toString().substring(2, 7) + Math.random().toString().substring(2, 7) + Math.random().toString().substring(2, 7) + Math.random().toString().substring(2, 7),
-      created: new Date(),
-      type: "purchase_confirmation_etix",
-      data: {},
-      email: result["email"],
-    };
 
     if (response.status === 200) {
       // logic for successful response
 
       const res = await response.text();
-      console.log("Purchase Tracker get_confirmation_data_etix Response : Success", res);
-      confirmation_res_etix.data = res;
+      console.log("Purchase Tracker get_confirmation_data_etix Response : Success");
+      console.log(res);
+
+      var confirmation_res_etix = {
+        id: Math.random().toString().substring(2, 7) + Math.random().toString().substring(2, 7) + Math.random().toString().substring(2, 7) + Math.random().toString().substring(2, 7),
+        created: new Date(),
+        type: "purchase_confirmation_etix",
+        data: res,
+        email: null,
+      };
+      // add  email
+      let result = await chrome.storage.local.get(["email"]);
+      confirmation_res_etix.email = result["email"];
+      // send message to dashboard
+
+      chrome.runtime.sendMessage({ cmd: "add_indexeddb_record_etix", confirmation_res_etix: confirmation_res_etix });
+      // automaically take confirmation page screenshot
+      chrome.runtime.sendMessage({ cmd: "confirmation_capture_etix" });
+      // post confirmation data to db
+      post_confirmation_data_etix(confirmation_res_etix);
+    } else {
     }
   } catch (err) {
     console.warn({ where: "Error in  get_confirmation_data_etix", e: err });
-  } finally {
-    // send message to dashboard
-    chrome.runtime.sendMessage({ cmd: "add_indexeddb_record_etix", confirmation_res_etix: confirmation_res_etix });
-    // automaically take confirmation page screenshot
-    chrome.runtime.sendMessage({ cmd: "confirmation_capture_etix" });
-    // post confirmation data to db
-    post_confirmation_data_etix(confirmation_res_etix);
   }
 }
 async function post_confirmation_data_etix(confirmation_res_etix) {
