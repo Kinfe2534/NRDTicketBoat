@@ -31,15 +31,6 @@
     "48": "images/icon.png",
     "128": "images/icon.png"
   },
-  "declarative_net_request": {
-    "rule_resources": [
-      {
-        "id": "ruleset_1",
-        "enabled": true,
-        "path": "rules/rules_1.json"
-      }
-    ]
-  },
   "web_accessible_resources": [
     {
       "resources": ["html/*", "js/*", "css/*", "images/*"],

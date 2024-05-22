@@ -5,8 +5,8 @@ $(window).on("load", function () {
 chrome.runtime.onMessage.addListener(async function (request, sender, sendResponse) {
   if (request.cmd === "from_webRequest_onBeforeSendHeaders_tm") {
     get_confirmation_data_tm(request.details);
-  } else if (request.cmd === "save_confirmation_capture_tm") {
-    save_confirmation_capture_tm(request.image);
+  } else if (request.cmd === "save_confirmation_capture") {
+    save_confirmation_capture(request.image);
   }
 });
 
@@ -128,7 +128,7 @@ async function get_confirmation_data_tm(details) {
       // send message to dashboard
       chrome.runtime.sendMessage({ cmd: "add_indexeddb_record_tm", confirmation_res_tm: confirmation_res_tm });
       // automaically take confirmation page screenshot
-      chrome.runtime.sendMessage({ cmd: "confirmation_capture_tm" });
+      chrome.runtime.sendMessage({ cmd: "confirmation_capture" });
       // post confirmation data to db
       post_confirmation_data_tm(confirmation_res_tm);
     }
@@ -427,7 +427,7 @@ query purchaseStatusQuery($getSessionStatusInput: GetSessionStatusInput!) {
   }
 }
 `;
-function save_confirmation_capture_tm(image) {
+function save_confirmation_capture(image) {
   let a = document.createElement("a");
   a.download = "capture_confirmation_tm.png";
   a.href = image;
