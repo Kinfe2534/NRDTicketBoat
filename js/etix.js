@@ -16,7 +16,7 @@ async function get_confirmation_data_etix() {
   try {
     const response = await fetch("https://www.etix.com/ticket/mvc/legacyOnlineSale/performance/sale/deliverOrder", {
       credentials: "include",
-      method: "POST",
+      method: "GET",
       headers: {
         Accept: "/",
         "Accept-Encoding": "gzip, deflate, br, zstd",
@@ -28,7 +28,6 @@ async function get_confirmation_data_etix() {
         "sec-fetch-dest": "empty",
         "sec-fetch-mode": "cors",
         "sec-fetch-site": "same-site",
-        Referer: "https://www.etix.com/ticket/mvc/legacyOnlineSale/performance/sale/displayPrice",
       },
     });
     // add  email
