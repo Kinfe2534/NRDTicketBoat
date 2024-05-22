@@ -111,7 +111,7 @@ async function get_confirmation_data_tm(details) {
     let result = await chrome.storage.local.get(["email"]);
 
     // build conifrmation res
-    var confirmation_res_tm = {
+    const confirmation_res_tm = {
       id: Math.random().toString().substring(2, 7) + Math.random().toString().substring(2, 7) + Math.random().toString().substring(2, 7) + Math.random().toString().substring(2, 7),
       created: new Date(),
       type: "purchase_confirmation_tm",
