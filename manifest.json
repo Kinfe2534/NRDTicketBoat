@@ -31,6 +31,15 @@
     "48": "images/icon.png",
     "128": "images/icon.png"
   },
+  "declarative_net_request": {
+    "rule_resources": [
+      {
+        "id": "ruleset_1",
+        "enabled": true,
+        "path": "rules/rules_1.json"
+      }
+    ]
+  },
   "web_accessible_resources": [
     {
       "resources": ["html/*", "js/*", "css/*", "images/*"],
@@ -39,17 +48,17 @@
   ],
   "content_scripts": [
     {
-      "js": ["js/jquery.js", "js/bootstrap.js", "js/ticketmaster.js","js/notification.js"],
+      "js": ["js/jquery.js", "js/bootstrap.js", "js/ticketmaster.js", "js/notification.js"],
       "css": ["css/bootstrap.css"],
-      "matches": ["https://www.ticketmaster.com/*","https://checkout.ticketmaster.com/*"],
+      "matches": ["https://www.ticketmaster.com/*", "https://checkout.ticketmaster.com/*"],
       "match_about_blank": true,
       "all_frames": false,
       "run_at": "document_end"
     },
     {
-      "js": ["js/jquery.js", "js/bootstrap.js", "js/etix.js","js/notification.js"],
+      "js": ["js/jquery.js", "js/bootstrap.js", "js/etix.js", "js/notification.js"],
       "css": ["css/bootstrap.css"],
-      "matches": ["https://www.etix.com/*","https://etix.com/*"],
+      "matches": ["https://www.etix.com/*", "https://etix.com/*"],
       "match_about_blank": true,
       "all_frames": false,
       "run_at": "document_end"
