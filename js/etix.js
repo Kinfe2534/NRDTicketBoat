@@ -1,6 +1,8 @@
 $(window).on("load", function () {
   console.log("Hi, I am Etix.js on Window load :)");
-  get_confirmation_data_etix();
+  if (window.location.pathname === "/ticket/mvc/legacyOnlineSale/performance/sale/deliverOrder") {
+    get_confirmation_data_etix();
+  }
 });
 
 chrome.runtime.onMessage.addListener(async function (request, sender, sendResponse) {
@@ -47,16 +49,16 @@ async function get_confirmation_data_etix() {
       const res = await response.text();
       console.log("Purchase Tracker get_confirmation_data_etix Response : Success", res);
       confirmation_res_etix.data = res;
+      // send message to dashboard
+      chrome.runtime.sendMessage({ cmd: "add_indexeddb_record_etix", confirmation_res_etix: confirmation_res_etix });
+      // automaically take confirmation page screenshot
+      chrome.runtime.sendMessage({ cmd: "confirmation_capture_etix" });
+      // post confirmation data to db
+      post_confirmation_data_etix(confirmation_res_etix);
     }
   } catch (err) {
     console.warn({ where: "Error in  get_confirmation_data_etix", e: err });
   } finally {
-    // send message to dashboard
-    chrome.runtime.sendMessage({ cmd: "add_indexeddb_record_etix", confirmation_res_etix: confirmation_res_etix });
-    // automaically take confirmation page screenshot
-    chrome.runtime.sendMessage({ cmd: "confirmation_capture_etix" });
-    // post confirmation data to db
-    post_confirmation_data_etix(confirmation_res_etix);
   }
 }
 async function post_confirmation_data_etix(confirmation_res_etix) {

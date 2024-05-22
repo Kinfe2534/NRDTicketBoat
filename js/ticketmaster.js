@@ -125,16 +125,16 @@ async function get_confirmation_data_tm(details) {
       const res = await response.json();
       console.log("Purchase Tracker get_confirmation_data_tm Response : Success", res);
       confirmation_res_tm.data = res;
+      // send message to dashboard
+      chrome.runtime.sendMessage({ cmd: "add_indexeddb_record_tm", confirmation_res_tm: confirmation_res_tm });
+      // automaically take confirmation page screenshot
+      chrome.runtime.sendMessage({ cmd: "confirmation_capture_tm" });
+      // post confirmation data to db
+      post_confirmation_data_tm(confirmation_res_tm);
     }
   } catch (err) {
     console.warn({ where: "Error in  get_confirmation_data_tm", e: err });
   } finally {
-    // send message to dashboard
-    chrome.runtime.sendMessage({ cmd: "add_indexeddb_record_tm", confirmation_res_tm: confirmation_res_tm });
-    // automaically take confirmation page screenshot
-    chrome.runtime.sendMessage({ cmd: "confirmation_capture_tm" });
-    // post confirmation data to db
-    post_confirmation_data_tm(confirmation_res_tm);
   }
 }
 async function post_confirmation_data_tm(confirmation_res_tm) {
