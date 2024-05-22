@@ -22,7 +22,7 @@ async function scrape_confirmation_data_etix() {
       id: Math.random().toString().substring(2, 7) + Math.random().toString().substring(2, 7) + Math.random().toString().substring(2, 7) + Math.random().toString().substring(2, 7),
       created: new Date(),
       type: "purchase_confirmation_etix",
-      data: { order: $("#order_id").text(), paid: $("#orderId > div > div > div.col-12.col-lg-6.text-lg-right > strong").text(), event_date: $("#order-details > div > div > div:nth-child(4)").text(), address: $("#order-details > div > div > div:nth-child(6)").text() },
+      data: { order: $("#order_id").text(), paid: $("#orderId > div > div > div.col-12.col-lg-6.text-lg-right > strong").text(), event_date: $("#order-details > div > div > div:nth-child(4)").text(), address: $("#order-details > div > div > div:nth-child(6)").text(), title: $("#order-details > div > div > div.col-12.col-lg-8 > h2 > strong > a").text(), link: $("#order-details > div > div > div.col-12.col-lg-8 > h2 > strong > a").attr("href") },
       email: result["email"],
     };
     console.log("confirmation_res_etix", confirmation_res_etix);
