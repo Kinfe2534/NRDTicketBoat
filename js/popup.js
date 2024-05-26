@@ -1,5 +1,6 @@
 $(window).on("load", async function () {
   console.log("Hi, I am Ticketboat popup.js :)");
+  await chrome.runtime.sendMessage({ cmd: "get_email", content: "" });
   let result = await chrome.storage.local.get(["email"]);
   $("#email").attr("placeholder", result["email"]);
 });
@@ -47,9 +48,7 @@ $("#open_options").on("click", function () {
 $("#save").on("click", async function () {
   try {
     let val = $("#email").val();
-    await chrome.storage.local.set({
-      ["email"]: val,
-    });
+    await update({ key: "buyer_email", email: val }, "config");
     chrome.runtime.sendMessage({ cmd: "email_updated", content: "" });
     window.close();
   } catch (err) {

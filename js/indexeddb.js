@@ -2,8 +2,6 @@
 
 let db = null;
 
-const objectStoreName = "TM_Objectstore";
-
 const request = indexedDB.open("PurchaseTracker", 3);
 
 request.onerror = function (event) {
@@ -14,14 +12,18 @@ request.onupgradeneeded = function (event) {
   console.log("PurchaseTracker DB onupgradeneeded event triggered :).");
   db = event.target.result;
 
-  let objectStore = db.createObjectStore(objectStoreName, { autoIncrement: true });
+  const objectStore_dashboard = db.createObjectStore("dashboard", { autoIncrement: true });
+  const objectStore_config = db.createObjectStore("config", { keyPath: "key" });
 
-  objectStore.transaction.oncomplete = function (event) {
-    console.log("PurchaseTraccker DB ObjectStore Created.");
+  objectStore_dashboard.transaction.oncomplete = function (event) {
+    console.log("PurchaseTraccker DB ObjectStore Dashboard Created.");
+  };
+  objectStore_config.transaction.oncomplete = function (event) {
+    console.log("PurchaseTraccker DB ObjectStore Config Created .");
   };
 };
 
-request.onsuccess = function (event) {
+request.onsuccess = async function (event) {
   db = event.target.result;
   console.log("PurchaseTracker DB OPENED.");
 
@@ -29,9 +31,18 @@ request.onsuccess = function (event) {
     console.log("PurchaseTracker FAILED TO OPEN DB.");
     console.log(event);
   };
+  let result = await read("buyer_email", "config");
+  if (result == null) {
+    console.log("No email :", result);
+    create({ key: "buyer_email", email: "john.doe@ticketboat.com" }, "config");
+  } else if (result["email"] === "john.doe@ticketboat.com") {
+    console.log("default email :", result["email"]);
+  } else {
+    console.log("configured email :", result["email"]);
+  }
 };
 // Purchase Tracker Create Read Update Delete Operations on DB
-function create(record) {
+function create(record, objectStoreName) {
   if (db) {
     const transaction = db.transaction(objectStoreName, "readwrite");
     const objectStore = transaction.objectStore(objectStoreName);
@@ -55,7 +66,7 @@ function create(record) {
     });
   }
 }
-function read(record) {
+function read(keyPath, objectStoreName) {
   if (db) {
     const transaction = db.transaction(objectStoreName, "readonly");
     const objectStore = transaction.objectStore(objectStoreName);
@@ -69,7 +80,7 @@ function read(record) {
         console.log("PROBLEM READING RECORDS.");
       };
 
-      let request = objectStore.get(record);
+      let request = objectStore.get(keyPath);
 
       request.onsuccess = function (event) {
         resolve(event.target.result);
@@ -78,7 +89,7 @@ function read(record) {
   }
 }
 
-function update(record) {
+function update(record, objectStoreName) {
   if (db) {
     const transaction = db.transaction(objectStoreName, "readwrite");
     const objectStore = transaction.objectStore(objectStoreName);
@@ -99,7 +110,7 @@ function update(record) {
   }
 }
 
-function remove(record) {
+function remove(record, objectStoreName) {
   if (db) {
     const transaction = db.transaction(objectStoreName, "readwrite");
     const objectStore = transaction.objectStore(objectStoreName);
@@ -120,7 +131,7 @@ function remove(record) {
   }
 }
 
-function readAll() {
+function readAll(objectStoreName) {
   if (db) {
     const transaction = db.transaction(objectStoreName, "readonly");
     const objectStore = transaction.objectStore(objectStoreName);
@@ -143,7 +154,7 @@ function readAll() {
   }
 }
 
-function clearAll() {
+function clearAll(objectStoreName) {
   if (db) {
     const transaction = db.transaction(objectStoreName, "readwrite");
     const objectStore = transaction.objectStore(objectStoreName);
@@ -163,4 +174,3 @@ function clearAll() {
     });
   }
 }
-

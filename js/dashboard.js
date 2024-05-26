@@ -3,219 +3,225 @@ $(window).on("load", function () {
 });
 $("#add_sample_record_tm").on("click", async function () {
   try {
-    let result = await chrome.storage.local.get(["email"]);
-    create({
-      id: Math.random().toString().substring(2, 7) + Math.random().toString().substring(2, 7) + Math.random().toString().substring(2, 7) + Math.random().toString().substring(2, 7),
-      email: result["email"],
-      created: new Date(),
-      type: "purchase_confirmation_tm",
-      data: {
+    let result = await read("buyer_email", "config");
+    create(
+      {
+        id: Math.random().toString().substring(2, 7) + Math.random().toString().substring(2, 7) + Math.random().toString().substring(2, 7) + Math.random().toString().substring(2, 7),
+        email: result["email"],
+        created: new Date(),
+        type: "purchase_confirmation_tm",
         data: {
-          getSessionStatus: {
-            errors: null,
-            requestId: "59ab151aa3ca436aa1aaa68f6f37bdc2",
-            status: "PURCHASE_SUCCESS",
-            purchaseStatusResponse: {
-              clubSiteId: null,
-              deliveryData: {
-                deliveryMethod: null,
-                deliveryTax: null,
-                description: "Get in with:",
-                id: "1073",
-                isETicket: true,
-                name: "eTickets",
-                price: {
-                  value: 0.0,
-                  subCurrencyValue: 0,
-                  currencyCode: "USD",
+          data: {
+            getSessionStatus: {
+              errors: null,
+              requestId: "59ab151aa3ca436aa1aaa68f6f37bdc2",
+              status: "PURCHASE_SUCCESS",
+              purchaseStatusResponse: {
+                clubSiteId: null,
+                deliveryData: {
+                  deliveryMethod: null,
+                  deliveryTax: null,
+                  description: "Get in with:",
+                  id: "1073",
+                  isETicket: true,
+                  name: "eTickets",
+                  price: {
+                    value: 0.0,
+                    subCurrencyValue: 0,
+                    currencyCode: "USD",
+                  },
+                  subDeliveryOptions: [
+                    {
+                      id: "1074",
+                      name: "Mobile",
+                      description: "Your phone's your ticket. Locate your tickets in your account - or in your app. When you go mobile, your tickets will not be emailed to you or available for print.",
+                    },
+                  ],
+                  type: "ETICKET",
                 },
-                subDeliveryOptions: [
+                encryptedMemberOrderNumber: "Z7IVgZOxvZ16kAs1Ae9",
+                errors: [],
+                eventData: {
+                  actOverrideId: 3100091,
+                  eventDate: "2024-07-12T22:30:00Z",
+                  eventEndDate: null,
+                  eventId: "08006030BA04236A",
+                  eventType: "STANDARD",
+                  hasStaticMap: true,
+                  healthCheckMessage: null,
+                  id: "vv1AFZkZYGkeBveun",
+                  image: "https://s1.ticketm.net/dam/a/771/58eb5559-dd52-46f0-b84c-361123282771_RETINA_PORTRAIT_16_9.jpg",
+                  isFanToFanExchange: false,
+                  isResaleEligible: null,
+                  isSpanMultipleDays: false,
+                  localDate: "2024-07-12",
+                  localTime: "18:30:00",
+                  name: "MOTHER MOTHER & CAVETOWN",
+                  onsaleDate: "2024-01-26T15:00:00Z",
+                  primaryAttraction: {
+                    id: "K8vZ917Gydf",
+                    legacyId: "1125964",
+                    imageHref: "https://s1.ticketm.net/dam/a/771/58eb5559-dd52-46f0-b84c-361123282771_RETINA_PORTRAIT_16_9.jpg",
+                    name: "Mother Mother",
+                    organizationId: null,
+                  },
+                  primaryCategory: {
+                    classification: "segment",
+                    hostId: "8194",
+                    id: "KZFzniwnSyZfZ7v7nJ",
+                    name: "Music",
+                  },
+                  promoter: "LIVE NATION MUSIC",
+                  promoterCategory: "LIVENATION",
+                  promoterId: "653",
+                  promoterIds: ["653"],
+                  quaternaryCategory: {
+                    id: "KZAyXgnZfZ7v7nI",
+                    name: "Undefined",
+                    classification: "type",
+                  },
+                  quinaryCategory: {
+                    id: "KZFzBErXgnZfZ7v7lJ",
+                    name: "Undefined",
+                    classification: "subType",
+                  },
+                  secondaryAttraction: {
+                    id: "K8vZ91792L7",
+                    legacyId: "2519721",
+                    imageHref: null,
+                    name: "Cavetown",
+                  },
+                  subCategory: {
+                    classification: "genre",
+                    hostId: "31",
+                    hostName: "CONCERTS:ROCK/POP",
+                    id: "KnvZfZ7vAeA",
+                    name: "Rock",
+                  },
+                  tertiaryCategory: {
+                    id: "KZazBEonSMnZfZ7v6F1",
+                    name: "Pop",
+                    classification: "subGenre",
+                  },
+                  transferable: true,
+                  url: "https://www.ticketmaster.com/mother-mother-cavetown-sterling-heights-michigan-07-12-2024/event/08006030BA04236A",
+                  venue: {
+                    address: {
+                      city: "Sterling Heights",
+                      country: "United States Of America",
+                      countryCode: "US",
+                      postCode: "48312",
+                      region: "Michigan",
+                      regionCode: "MI",
+                      streetAddress: "14900 Metropolitan Parkway",
+                    },
+                    dmaId: 266,
+                    id: "KovZpZAJAlAA",
+                    name: "Michigan Lottery Amphitheatre at Freedom Hill",
+                    timezone: "America/New_York",
+                    tmId: "65757",
+                  },
+                },
+                hostUpsellEvents: [],
+                locale: "en-us",
+                orderFees: {
+                  currencyCode: "USD",
+                  subCurrencyValue: 550,
+                },
+                orderNumber: "25-58298/DET",
+                parkingConfirmationUrl: "",
+                paymentMethods: [
                   {
-                    id: "1074",
-                    name: "Mobile",
-                    description: "Your phone's your ticket. Locate your tickets in your account - or in your app. When you go mobile, your tickets will not be emailed to you or available for print.",
+                    ccLast4Digits: "0573",
+                    chargeableAmount: {
+                      currencyCode: "USD",
+                      subCurrencyValue: 10160,
+                    },
+                    fundingMethod: "MASTERCARD",
+                    fundingSource: "creditcard",
                   },
                 ],
-                type: "ETICKET",
-              },
-              encryptedMemberOrderNumber: "Z7IVgZOxvZ16kAs1Ae9",
-              errors: [],
-              eventData: {
-                actOverrideId: 3100091,
-                eventDate: "2024-07-12T22:30:00Z",
-                eventEndDate: null,
-                eventId: "08006030BA04236A",
-                eventType: "STANDARD",
-                hasStaticMap: true,
-                healthCheckMessage: null,
-                id: "vv1AFZkZYGkeBveun",
-                image: "https://s1.ticketm.net/dam/a/771/58eb5559-dd52-46f0-b84c-361123282771_RETINA_PORTRAIT_16_9.jpg",
-                isFanToFanExchange: false,
-                isResaleEligible: null,
-                isSpanMultipleDays: false,
-                localDate: "2024-07-12",
-                localTime: "18:30:00",
-                name: "MOTHER MOTHER & CAVETOWN",
-                onsaleDate: "2024-01-26T15:00:00Z",
-                primaryAttraction: {
-                  id: "K8vZ917Gydf",
-                  legacyId: "1125964",
-                  imageHref: "https://s1.ticketm.net/dam/a/771/58eb5559-dd52-46f0-b84c-361123282771_RETINA_PORTRAIT_16_9.jpg",
-                  name: "Mother Mother",
-                  organizationId: null,
-                },
-                primaryCategory: {
-                  classification: "segment",
-                  hostId: "8194",
-                  id: "KZFzniwnSyZfZ7v7nJ",
-                  name: "Music",
-                },
-                promoter: "LIVE NATION MUSIC",
-                promoterCategory: "LIVENATION",
-                promoterId: "653",
-                promoterIds: ["653"],
-                quaternaryCategory: {
-                  id: "KZAyXgnZfZ7v7nI",
-                  name: "Undefined",
-                  classification: "type",
-                },
-                quinaryCategory: {
-                  id: "KZFzBErXgnZfZ7v7lJ",
-                  name: "Undefined",
-                  classification: "subType",
-                },
-                secondaryAttraction: {
-                  id: "K8vZ91792L7",
-                  legacyId: "2519721",
-                  imageHref: null,
-                  name: "Cavetown",
-                },
-                subCategory: {
-                  classification: "genre",
-                  hostId: "31",
-                  hostName: "CONCERTS:ROCK/POP",
-                  id: "KnvZfZ7vAeA",
-                  name: "Rock",
-                },
-                tertiaryCategory: {
-                  id: "KZazBEonSMnZfZ7v6F1",
-                  name: "Pop",
-                  classification: "subGenre",
-                },
-                transferable: true,
-                url: "https://www.ticketmaster.com/mother-mother-cavetown-sterling-heights-michigan-07-12-2024/event/08006030BA04236A",
-                venue: {
-                  address: {
-                    city: "Sterling Heights",
-                    country: "United States Of America",
-                    countryCode: "US",
-                    postCode: "48312",
-                    region: "Michigan",
-                    regionCode: "MI",
-                    streetAddress: "14900 Metropolitan Parkway",
-                  },
-                  dmaId: 266,
-                  id: "KovZpZAJAlAA",
-                  name: "Michigan Lottery Amphitheatre at Freedom Hill",
-                  timezone: "America/New_York",
-                  tmId: "65757",
-                },
-              },
-              hostUpsellEvents: [],
-              locale: "en-us",
-              orderFees: {
-                currencyCode: "USD",
-                subCurrencyValue: 550,
-              },
-              orderNumber: "25-58298/DET",
-              parkingConfirmationUrl: "",
-              paymentMethods: [
-                {
-                  ccLast4Digits: "0573",
-                  chargeableAmount: {
-                    currencyCode: "USD",
-                    subCurrencyValue: 10160,
-                  },
-                  fundingMethod: "MASTERCARD",
-                  fundingSource: "creditcard",
-                },
-              ],
-              sellerNotes: null,
-              status: "SUCCESS",
-              ticketOrderItems: [
-                {
-                  adaTypes: null,
-                  endSeat: "50",
-                  inventoryDetail: {
-                    type: "Primary",
-                    resaleDetail: null,
-                  },
-                  isGeneralAdmission: true,
-                  quantityAvailable: null,
-                  row: "122",
-                  seatNames: ["49", "50"],
-                  section: "LWN3",
-                  startSeat: "49",
-                  ticketTypes: [
-                    {
-                      description: "Standard Ticket",
-                      id: "000000000001",
-                      priceDetails: {
-                        facilityCharges: {
-                          currencyCode: "USD",
-                          value: 0.0,
-                        },
-                        price: {
-                          currencyCode: "USD",
-                          value: 36.0,
-                        },
-                        serviceCharges: {
-                          currencyCode: "USD",
-                          value: 11.8,
-                        },
-                        taxDetails: {
-                          faceValueTax: {
+                sellerNotes: null,
+                status: "SUCCESS",
+                ticketOrderItems: [
+                  {
+                    adaTypes: null,
+                    endSeat: "50",
+                    inventoryDetail: {
+                      type: "Primary",
+                      resaleDetail: null,
+                    },
+                    isGeneralAdmission: true,
+                    quantityAvailable: null,
+                    row: "122",
+                    seatNames: ["49", "50"],
+                    section: "LWN3",
+                    startSeat: "49",
+                    ticketTypes: [
+                      {
+                        description: "Standard Ticket",
+                        id: "000000000001",
+                        priceDetails: {
+                          facilityCharges: {
+                            currencyCode: "USD",
+                            value: 0.0,
+                          },
+                          price: {
+                            currencyCode: "USD",
+                            value: 36.0,
+                          },
+                          serviceCharges: {
+                            currencyCode: "USD",
+                            value: 11.8,
+                          },
+                          taxDetails: {
+                            faceValueTax: {
+                              currencyCode: "USD",
+                              value: 0.25,
+                            },
+                            serviceChargeTax: {
+                              currencyCode: "USD",
+                              value: 0.0,
+                            },
+                            serviceChargeTax2: {
+                              currencyCode: "USD",
+                              value: 0.0,
+                            },
+                          },
+                          taxes: {
                             currencyCode: "USD",
                             value: 0.25,
                           },
-                          serviceChargeTax: {
-                            currencyCode: "USD",
-                            value: 0.0,
-                          },
-                          serviceChargeTax2: {
-                            currencyCode: "USD",
-                            value: 0.0,
-                          },
                         },
-                        taxes: {
-                          currencyCode: "USD",
-                          value: 0.25,
-                        },
+                        quantity: 2,
                       },
-                      quantity: 2,
-                    },
-                  ],
-                },
-              ],
+                    ],
+                  },
+                ],
+              },
             },
           },
         },
       },
-    });
+      "dashboard"
+    );
   } catch (err) {
     console.warn({ where: "Error in Dashboard add_sample_record_tm", e: err });
   }
 });
 $("#add_sample_record_etix").on("click", async function () {
   try {
-    let result = await chrome.storage.local.get(["email"]);
-    create({
-      id: Math.random().toString().substring(2, 7) + Math.random().toString().substring(2, 7) + Math.random().toString().substring(2, 7) + Math.random().toString().substring(2, 7),
-      email: result["email"],
-      created: new Date(),
-      type: "purchase_confirmation_etix",
-      data: {},
-    });
+    let result = await read("buyer_email", "config");
+    create(
+      {
+        id: Math.random().toString().substring(2, 7) + Math.random().toString().substring(2, 7) + Math.random().toString().substring(2, 7) + Math.random().toString().substring(2, 7),
+        email: result["email"],
+        created: new Date(),
+        type: "purchase_confirmation_etix",
+        data: {},
+      },
+      "dashboard"
+    );
   } catch (err) {
     console.warn({ where: "Error in Dashboard add_sample_record_etix", e: err });
   }
@@ -223,7 +229,7 @@ $("#add_sample_record_etix").on("click", async function () {
 
 $("#clear_all_records").on("click", function () {
   try {
-    clearAll();
+    clearAll("dashboard");
   } catch (err) {
     console.warn({ where: "Error in Dashboard clearAll", e: err });
   }
@@ -319,10 +325,9 @@ function dashboard_table(indexeddb_data) {
     }
   });
 }
-
 setInterval(() => {
   if (db) {
-    readAll().then((result) => {
+    readAll("dashboard").then((result) => {
       dashboard_table(result);
     });
   } else {

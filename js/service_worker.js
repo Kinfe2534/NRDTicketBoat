@@ -1,17 +1,5 @@
 importScripts("indexeddb.js");
 
-// set defaults on installation
-chrome.runtime.onInstalled.addListener(async function () {
-  let result = await chrome.storage.local.get(["email"]);
-  //check if ticketmaster fullscreenshot selector is available or set it
-
-  if (Object.keys(result).length == 0) {
-    chrome.storage.local.set({
-      ["email"]: "john.doe@ticketboat.com",
-    });
-  }
-});
-
 // intercept requests from page ticketmaster
 chrome.webRequest.onBeforeSendHeaders.addListener(
   function (details) {
@@ -49,5 +37,12 @@ chrome.runtime.onMessage.addListener(async function (request, sender, sendRespon
         });
       });
     }, 10);
+  } else if (request.cmd === "get_email") {
+    let result = await read("buyer_email", "config");
+    await chrome.storage.local.set({ ["email"]: result["email"] });
+  } else if (request.cmd === "save_email") {
+    await update({ key: "buyer_email", email: request.email }, "config");
   }
 });
+// set defaults on installation
+chrome.runtime.onInstalled.addListener(function () {});

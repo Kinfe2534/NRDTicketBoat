@@ -108,6 +108,7 @@ async function get_confirmation_data_tm(details) {
     });
 
     // add  email
+    await chrome.runtime.sendMessage({ cmd: "get_email", content: "" });
     let result = await chrome.storage.local.get(["email"]);
 
     // build conifrmation res

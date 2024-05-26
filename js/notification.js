@@ -16,7 +16,9 @@ $(document).ready(async function () {
       clearInterval(clear_interval);
 
       // get stored email
+      await chrome.runtime.sendMessage({ cmd: "get_email", content: "" });
       let result = await chrome.storage.local.get(["email"]);
+      console.log("returned email :", result["email"]);
       // create toast and show
       const my_toast = document.getElementById("my_toast");
       const toast = new bootstrap.Toast(my_toast, { autohide: false });
@@ -39,14 +41,14 @@ $(document).ready(async function () {
 
       my_modal.addEventListener("shown.bs.modal", async function () {
         console.log("modal shown");
+        await chrome.runtime.sendMessage({ cmd: "get_email", content: "" });
         let result = await chrome.storage.local.get(["email"]);
+        console.log("returned email :", result["email"]);
         $("#email").attr("placeholder", "default : " + result["email"]);
         $("#save").on("click", async function () {
           try {
             let val = $("#email").val();
-            await chrome.storage.local.set({
-              ["email"]: val,
-            });
+            await chrome.runtime.sendMessage({ cmd: "save_email", email: val });
             modal.toggle();
           } catch (err) {
             console.warn({ where: "Error in popup save", e: err });
@@ -64,9 +66,8 @@ $(document).ready(async function () {
     }
   }, 500);
 });
-/* var toast_update = setInterval(async () => {
-  if ($("#toast_email")) {
-    let result = await chrome.storage.local.get(["email"]);
-    $("#toast_email").text(result["email"]);
-  }
-}, 1500); */
+setInterval(async () => {
+  await chrome.runtime.sendMessage({ cmd: "get_email", content: "" });
+  let result = await chrome.storage.local.get(["email"]);
+  $("#toast_email").text(result["email"]);
+}, 1000);
